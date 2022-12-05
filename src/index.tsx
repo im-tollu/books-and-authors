@@ -1,11 +1,20 @@
+import { configure } from 'mobx'
 import 'reflect-metadata'
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import { AppComponent } from './AppComponent';
 import reportWebVitals from './reportWebVitals';
 import { container } from './ioc'
 import { InjectionProvider } from './Core/Providers/Injection';
+
+configure({
+  enforceActions: 'never',
+  computedRequiresReaction: false,
+  reactionRequiresObservable: false,
+  observableRequiresReaction: false,
+  disableErrorBoundaries: false
+})
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,7 +22,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <InjectionProvider container={container}>
-      <App />
+      <AppComponent />
     </InjectionProvider>
   </React.StrictMode>
 );
