@@ -1,11 +1,11 @@
-import { configure } from 'mobx'
 import 'reflect-metadata'
+import { configure } from 'mobx'
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { AppComponent } from './AppComponent';
 import reportWebVitals from './reportWebVitals';
-import { container } from './ioc'
+import { container } from './AppIOC'
 import { InjectionProvider } from './Core/Providers/Injection';
 
 configure({
