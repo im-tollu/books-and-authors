@@ -1,3 +1,6 @@
+import { timeStamp } from "console"
+import { injectable } from "inversify"
+import { action, computed, makeObservable, observable } from "mobx"
 import { createContext, PropsWithChildren, useContext, useState } from "react"
 
 interface ValidationState {
@@ -23,4 +26,32 @@ export const ValidationProvider: React.FC<PropsWithChildren<{}>> = ({ children }
 export function useValidation() {
     const { clientValidationMessages, updateClientValidationMessages } = useContext(ValidationContext)
     return [clientValidationMessages, updateClientValidationMessages]
+}
+
+@injectable()
+export class ClientValidation {
+    messages: string[]
+
+    constructor() {
+        this.messages = []
+
+        makeObservable(this, {
+            messages: observable,
+            addMessage: action,
+            reset: action,
+            hasMessages: computed
+        })
+    }
+
+    addMessage = (message: string) => {
+        this.messages.push(message)
+    }
+
+    reset = () => {
+        this.messages = []
+    }
+
+    hasMessages = () => {
+        return this.messages.length === 0
+    }
 }
