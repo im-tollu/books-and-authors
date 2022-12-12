@@ -1,5 +1,5 @@
 import { Container, interfaces } from 'inversify'
-import { createContext, useContext, FC, PropsWithChildren } from 'react'
+import { createContext, useContext, FC, PropsWithChildren, useState } from 'react'
 
 interface InjectionState {
     container: Container | null
@@ -24,5 +24,7 @@ export function useInjection<T>(identifier: interfaces.ServiceIdentifier<T>): T 
     if (!container) {
         throw new Error('IoC container not configured')
     }
-    return container.get<T>(identifier)
+    const [dependency] = useState<T>(container.get<T>(identifier))
+
+    return dependency
 }
