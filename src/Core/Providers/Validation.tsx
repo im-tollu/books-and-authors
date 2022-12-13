@@ -39,7 +39,6 @@ export class ClientValidation {
             messages: observable,
             addMessage: action,
             reset: action,
-            hasMessages: computed
         })
     }
 
@@ -51,7 +50,7 @@ export class ClientValidation {
         this.messages = []
     }
 
-    hasMessages = () => {
-        return this.messages.length === 0
+    get hasMessages() {
+        return this.messages.length !== 0
     }
 }

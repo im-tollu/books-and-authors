@@ -5,8 +5,10 @@ import { LoginRegisterOption, LoginRegisterPresenter } from './LoginRegisterPres
 export const LoginRegisterComponent: React.FC = observer(() => {
     const presenter = useInjection(LoginRegisterPresenter)
 
-    // todo use validation
-    const formValid = () => true
+    const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+        event.preventDefault()
+        presenter.submitForm()
+    }
 
     return (
         <div className="login-register">
@@ -35,7 +37,8 @@ export const LoginRegisterComponent: React.FC = observer(() => {
                         style={{ backgroundColor: '#e4257d' }}
                         type="submit"
                         value="login"
-                        onClick={() => {
+                        onClick={(event) => {
+                            event.preventDefault()
                             presenter.option = LoginRegisterOption.Login
                         }}
                     />
@@ -44,7 +47,8 @@ export const LoginRegisterComponent: React.FC = observer(() => {
                         style={{ backgroundColor: '#2E91FC' }}
                         type="submit"
                         value="register"
-                        onClick={() => {
+                        onClick={(event) => {
+                            event.preventDefault()
                             presenter.option = LoginRegisterOption.Register
                         }}
                     />
@@ -63,13 +67,7 @@ export const LoginRegisterComponent: React.FC = observer(() => {
             >
                 <form
                     className="login"
-                    onSubmit={(event) => {
-                        event.preventDefault()
-                        if (formValid()) {
-                            if (presenter.option === LoginRegisterOption.Login) presenter.login()
-                            if (presenter.option === LoginRegisterOption.Register) presenter.register()
-                        }
-                    }}
+                    onSubmit={handleSubmit}
                 >
                     <div className="w3-col s4 w3-center">
                         <input
@@ -93,7 +91,7 @@ export const LoginRegisterComponent: React.FC = observer(() => {
                         />
                     </div>
                     <div className="w3-col s4 w3-center">
-                        <input type="submit" className="lr-submit" value={presenter.option} />
+                        <input type="submit" className="lr-submit" value={presenter.option.valueOf()} />
                     </div>
 
                     <br />
