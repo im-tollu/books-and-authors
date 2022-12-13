@@ -36,6 +36,7 @@ export class LoginRegisterPresenter {
     }
 
     submitForm = async () => {
+        this.clientValidation.reset()
         this.validateForm()
         if (this.clientValidation.hasMessages) {
             return
