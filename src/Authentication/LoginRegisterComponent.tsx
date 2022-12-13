@@ -1,4 +1,5 @@
 import { observer } from 'mobx-react-lite'
+import { MessagesComponent } from '../Core/Messages/MessagesComponent'
 import { useInjection } from '../Core/Providers/Injection'
 import { LoginRegisterOption, LoginRegisterPresenter } from './LoginRegisterPresenter'
 
@@ -99,7 +100,7 @@ export const LoginRegisterComponent: React.FC = observer(() => {
                     <br />
                 </form>
             </div>
-            {/*<MessagesComponent />*/}
+            {<MessagesComponent />}
         </div>
     )
 })
