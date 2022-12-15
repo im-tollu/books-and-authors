@@ -1,18 +1,34 @@
-import { injectable, inject } from 'inversify'
-import { makeObservable, observable } from 'mobx'
+import { injectable } from 'inversify'
+import { action, makeObservable, observable } from 'mobx'
+
+export enum MessageSource {
+    Api,
+    Ui
+}
+
+export interface Message {
+    message: string
+    source: MessageSource
+}
 
 @injectable()
 export class MessagesRepository {
-    appMessages: string[]
+    messages: Message[]
 
     constructor() {
         makeObservable(this, {
-            appMessages: observable
+            messages: observable,
+            addMessage: action,
+            reset: action
         })
-        this.appMessages = []
+        this.messages = []
+    }
+
+    addMessage = (message: Message) => {
+        this.messages.push(message)
     }
 
     reset = () => {
-        this.appMessages = []
+        this.messages = []
     }
 }

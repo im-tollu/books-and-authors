@@ -8,24 +8,22 @@ export const MessagesComponent = observer((props) => {
 
     return (
         <>
-            {/*presenter.messages &&
-                presenter.messages.map((item, i) => {
-                    return (
-                        <div style={{ backgroundColor: 'red' }} key={i}>
-                            {' - '}
-                            {item}
-                        </div>
-                    )
-                })*/}
-            {presenter.hasUiMessages &&
-                presenter.uiMessages.map((item, i) => {
-                    return (
-                        <div style={{ backgroundColor: 'orange' }} key={i}>
-                            {' - '}
-                            {item}
-                        </div>
-                    )
-                })}
+            {presenter.apiMessages.map((item, i) => {
+                return (
+                    <div style={{ backgroundColor: 'red' }} key={i}>
+                        {' - '}
+                        {item}
+                    </div>
+                )
+            })}
+            {presenter.uiMessages.map((item, i) => {
+                return (
+                    <div style={{ backgroundColor: 'orange' }} key={i}>
+                        {' - '}
+                        {item}
+                    </div>
+                )
+            })}
         </>
     )
 })

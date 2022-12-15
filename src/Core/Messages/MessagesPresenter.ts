@@ -1,40 +1,54 @@
 import { injectable, inject } from 'inversify'
-import { makeObservable, observable, action, computed } from 'mobx'
-import { ClientValidation } from '../Providers/Validation'
-import { MessagesRepository } from './MessagesRepository'
+import { makeObservable, action, computed } from 'mobx'
+import { MessageSource, MessagesRepository } from './MessagesRepository'
 
 @injectable()
 export class MessagesPresenter {
-    showValidationWarning: boolean
 
     constructor(
-        @inject(ClientValidation) private _clientValidation: ClientValidation,
         @inject(MessagesRepository) private _messagesRepository: MessagesRepository
     ) {
         makeObservable(this, {
-            showValidationWarning: observable,
-            messages: computed,
+            apiMessages: computed,
             uiMessages: computed,
-            hasUiMessages: computed,
-            unpackRepositoryPmToVm: action
+            hasMessages: computed,
+            reset: action,
         })
-        this.showValidationWarning = false
     }
 
-    get messages() {
-        return this._messagesRepository.appMessages
+    get apiMessages(): string[] {
+        return this.getMessagesOfSource(MessageSource.Api)
     }
 
-    get uiMessages() {
-        return this._clientValidation.messages
+    get uiMessages(): string[] {
+        return this.getMessagesOfSource(MessageSource.Ui)
     }
 
-    get hasUiMessages() {
-        return this._clientValidation.hasMessages
+    get hasMessages() {
+        return this._messagesRepository.messages.length > 0
     }
 
-    unpackRepositoryPmToVm = (pm: any, userMessage: any) => {
-        this.showValidationWarning = !pm.success
-        this._messagesRepository.appMessages = pm.success ? [userMessage] : [pm.serverMessage]
+    addUiMessage = (message: string) => {
+        this._messagesRepository.addMessage({
+            message,
+            source: MessageSource.Ui
+        })
+    }
+
+    addApiMessage = (message: string) => {
+        this._messagesRepository.addMessage({
+            message,
+            source: MessageSource.Api
+        })
+    }
+
+    getMessagesOfSource = (source: MessageSource): string[] => {
+        return this._messagesRepository.messages
+            .filter(message => message.source === source)
+            .map(message => message.message)
+    }
+
+    reset = () => {
+        this._messagesRepository.reset()
     }
 }

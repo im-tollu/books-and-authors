@@ -100,7 +100,7 @@ export const LoginRegisterComponent: React.FC = observer(() => {
                     <br />
                 </form>
             </div>
-            {<MessagesComponent />}
+            <MessagesComponent />
         </div>
     )
 })

@@ -2,9 +2,9 @@ import { injectable, inject } from 'inversify'
 
 @injectable()
 export class Config {
-    apiUrl: string
+    secureApiUrl: string
 
     constructor() {
-        this.apiUrl = 'https://api.logicroom.co/secure-api/im.tollu@gmail.com'
+        this.secureApiUrl = 'https://api.logicroom.co/secure-api/im.tollu@gmail.com'
     }
 }

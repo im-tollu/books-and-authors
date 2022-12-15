@@ -26,6 +26,7 @@ export class HttpGateway implements IApiGateway {
             headers: this.buildHeaders()
         })
         const dto = await response.json()
+        console.log('dto', dto)
         return dto
     }
 
@@ -39,7 +40,7 @@ export class HttpGateway implements IApiGateway {
     }
 
     resolvePath = (path: string) => {
-        return this._config.apiUrl + path
+        return this._config.secureApiUrl + path
     }
 
     buildHeaders = () => {

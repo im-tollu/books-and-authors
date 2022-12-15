@@ -1,7 +1,10 @@
 import { inject, injectable } from "inversify";
 import { makeObservable, observable } from "mobx";
-import { ClientValidation } from "../Core/Providers/Validation";
+import type { IApiGateway } from "../Core/IApiGateway";
+import { MessagesPresenter } from "../Core/Messages/MessagesPresenter";
+import { TYPE } from "../Core/Types";
 import { Router } from "../Routing/Router";
+import { AuthenticationRepository } from "./AuthenticationRepository";
 
 export enum LoginRegisterOption {
     Login = 'Login',
@@ -15,8 +18,10 @@ export class LoginRegisterPresenter {
     password: string
 
     constructor(
-        @inject(Router) private router: Router,
-        @inject(ClientValidation) private clientValidation: ClientValidation
+        @inject(Router) private _router: Router,
+        @inject(TYPE.IApiGateway) private _apiGateway: IApiGateway,
+        @inject(AuthenticationRepository) private _authenticationRepository: AuthenticationRepository,
+        @inject(MessagesPresenter) private _messagePresenter: MessagesPresenter
     ) {
         this.email = ''
         this.password = ''
@@ -36,9 +41,9 @@ export class LoginRegisterPresenter {
     }
 
     submitForm = async () => {
-        this.clientValidation.reset()
+        this._messagePresenter.reset()
         this.validateForm()
-        if (this.clientValidation.hasMessages) {
+        if (this._messagePresenter.hasMessages) {
             return
         }
 
@@ -53,17 +58,18 @@ export class LoginRegisterPresenter {
     validateForm = () => {
         console.log(`email: [${this.email}]`)
         if (this.email === '') {
-            this.clientValidation.addMessage('No email')
+            this._messagePresenter.addUiMessage('No email')
         }
 
         console.log(`password: [${this.password}]`)
         if (this.password === '') {
-            this.clientValidation.addMessage('No password')
+            this._messagePresenter.addUiMessage('No password')
         }
     }
 
     login = async () => {
         console.log('Logging in...')
+        await this._authenticationRepository.login(this.email, this.password)
     }
 
     register = async () => {
