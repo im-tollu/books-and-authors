@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { AppComponent } from './AppComponent';
 import reportWebVitals from './reportWebVitals';
-import { container } from './AppIOC'
+import { createContainer } from './AppIOC'
 import { InjectionProvider } from './Core/Providers/Injection';
 
 configure({
@@ -16,6 +16,7 @@ configure({
   disableErrorBoundaries: false
 })
 
+const container = createContainer()
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
