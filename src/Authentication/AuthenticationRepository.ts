@@ -11,6 +11,11 @@ interface LoginDto {
     token: string
 }
 
+interface RegisterDto {
+    email: string
+    token: string
+}
+
 export interface ApiMessage {
     message: string
 }
@@ -53,10 +58,22 @@ export class AuthenticationRepository {
     }
 
     register = async (email: string, password: string) => {
-        const registerDto = await this._apiGateway.post('/register', {
+        const responseDto = await this._apiGateway.post('/register', {
             email: email,
             password: password
         })
+
+        if (responseDto.success) {
+            const registerDto = responseDto.result as RegisterDto
+            this._userModel.email = registerDto.email
+            this._userModel.token = registerDto.token
+        } else {
+            const messageDto = responseDto.result as ApiMessage
+            this._messagesRepository.addMessage({
+                message: messageDto.message,
+                source: MessageSource.Api
+            })
+        }
     }
 
     logOut = async () => {

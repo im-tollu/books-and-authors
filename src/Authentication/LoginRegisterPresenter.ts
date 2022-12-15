@@ -74,5 +74,6 @@ export class LoginRegisterPresenter {
 
     register = async () => {
         console.log('Registering...')
+        await this._authenticationRepository.register(this.email, this.password)
     }
 }
