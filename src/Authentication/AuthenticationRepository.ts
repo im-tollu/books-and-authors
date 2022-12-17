@@ -5,6 +5,7 @@ import { UserModel } from '../Authentication/UserModel'
 import { TYPE } from '../Core/Types'
 import type { IApiGateway } from '../Core/IApiGateway'
 import { MessageSource, MessagesRepository } from '../Core/Messages/MessagesRepository'
+import { RouteId } from '../Routing/RouteDefinitions'
 
 interface LoginDto {
     email: string
@@ -48,6 +49,7 @@ export class AuthenticationRepository {
             const loginDto = responseDto.result as LoginDto
             this._userModel.email = loginDto.email
             this._userModel.token = loginDto.token
+            this._router.navigate(RouteId.HomeRoute)
         } else {
             const messageDto = responseDto.result as ApiMessage
             this._messagesRepository.addMessage({
@@ -79,5 +81,6 @@ export class AuthenticationRepository {
     logOut = async () => {
         this._userModel.email = null
         this._userModel.token = null
+        this._router.navigate(RouteId.LoginRoute)
     }
 }

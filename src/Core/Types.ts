@@ -1,3 +1,4 @@
 export const TYPE = {
-    IApiGateway: Symbol.for('IApiGateway')
+    IApiGateway: Symbol.for('IApiGateway'),
+    IRoutingGateway: Symbol.for('IRoutingGateway')
 }

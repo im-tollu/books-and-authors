@@ -1,14 +1,17 @@
-import { injectable, inject } from 'inversify'
-import { UserModel } from '../Authentication/UserModel'
 import { Config } from './Config'
 import { IApiGateway } from './IApiGateway'
 
-@injectable()
 export class HttpGateway implements IApiGateway {
-    constructor(
-        @inject(Config) private _config: Config,
-        @inject(UserModel) private _userModel: UserModel
-    ) { }
+    _authenticationToken: string | null
+
+    constructor(private _config: Config) {
+        this._authenticationToken = null
+    }
+
+
+    set authenticationToken(token: string | null) {
+        this.authenticationToken = token
+    }
 
     get = async (path: string) => {
         const response = await fetch(this.resolvePath(path), {
@@ -48,8 +51,8 @@ export class HttpGateway implements IApiGateway {
             'Content-Type': 'application/json'
         }
 
-        if (this._userModel.token !== null) {
-            headers['Authorization'] = this._userModel.token
+        if (this._authenticationToken !== null) {
+            headers['Authorization'] = this._authenticationToken
         }
 
         return headers

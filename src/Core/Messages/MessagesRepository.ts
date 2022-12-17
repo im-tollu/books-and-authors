@@ -6,6 +6,7 @@ export enum MessageSource {
     Ui
 }
 
+
 export interface Message {
     message: string
     source: MessageSource
