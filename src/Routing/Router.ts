@@ -1,11 +1,12 @@
 import { inject, injectable } from 'inversify'
 import { makeObservable, observable } from 'mobx'
+import { UserModel } from '../Authentication/UserModel'
 import { TYPE } from '../Core/Types'
 import type { IRoutingGateway } from './IRoutingGateway'
 import { RouteDefinition, routeDefinitions, RouteId } from './RouteDefinitions'
 
 export interface Route {
-    id: RouteId
+    routeId: RouteId
 }
 
 const ROUTING_PREFIX = '#!'
@@ -16,9 +17,10 @@ export class Router {
 
     constructor(
         @inject(TYPE.IRoutingGateway) private _gateway: IRoutingGateway,
+        @inject(UserModel) private _userModel: UserModel,
     ) {
         this.currentRoute = {
-            id: RouteId.LoginRoute
+            routeId: RouteId.LoginRoute
         }
 
         makeObservable(this, {
@@ -32,20 +34,26 @@ export class Router {
         const routeDefinition = routeDefinitions[routeId]
         const pathString = routeDefinition.path.join('/')
         const routingString = `${ROUTING_PREFIX}${pathString}`
+        console.log(`navigating to ${routingString}`)
         this._gateway.navigate(routingString)
     }
 
     onRoute = (routingString: string) => {
-        console.log('routingString:', routingString)
         const routeId = parseRoute(routingString)
-        this.currentRoute.id = routeId
-        console.log('route:', this.currentRoute.id.toString())
+        const routeDefinition = routeDefinitions.find(route => route.routeId === routeId)!
+        if (routeDefinition.isSecure && !this._userModel.isLoggedIn) {
+            this.navigate(RouteId.LoginRoute)
+            return
+        }
+
+        this.currentRoute = {
+            routeId
+        }
     }
 }
 
 function parseRoute(routingString: string): RouteId {
     if (routingString === '' || routingString === ROUTING_PREFIX) {
-        console.log(RouteId.HomeRoute)
         return RouteId.HomeRoute
     }
 
@@ -55,14 +63,11 @@ function parseRoute(routingString: string): RouteId {
     const strippedRoutingString = routingString.substring(ROUTING_PREFIX.length)
 
     for (const routeDefinition of routeDefinitions) {
-        console.log(`matching ${strippedRoutingString} to ${routeDefinition.path}`)
         if (routingStringMatches(strippedRoutingString, routeDefinition)) {
-            console.log(`route matches: ${routeDefinition.routeId}`)
             return routeDefinition.routeId
         }
     }
 
-    console.log(RouteId.NotFoundRoute)
     return RouteId.NotFoundRoute
 }
 

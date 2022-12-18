@@ -39,7 +39,6 @@ export class AuthenticationRepository {
     }
 
     login = async (email: string, password: string) => {
-        console.log('Posting...')
         const responseDto = await this._apiGateway.post('/login', {
             email: email,
             password: password

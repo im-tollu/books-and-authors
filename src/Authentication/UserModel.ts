@@ -1,5 +1,5 @@
 import { injectable } from 'inversify'
-import { makeObservable, observable } from 'mobx'
+import { computed, makeObservable, observable } from 'mobx'
 
 @injectable()
 export class UserModel {
@@ -10,10 +10,16 @@ export class UserModel {
     constructor() {
         makeObservable(this, {
             email: observable,
-            token: observable
+            token: observable,
+            isLoggedIn: computed,
         })
 
         this.email = null
         this.token = null
+    }
+
+    get isLoggedIn() {
+        console.log(`token: ${this.token}`)
+        return this.token !== null
     }
 }

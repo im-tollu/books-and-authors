@@ -7,9 +7,8 @@ export class BrowserRoutingGateway implements IRoutingGateway {
             handler(newUrl.hash)
         }
 
-        handler(window.location.hash)
         window.addEventListener('hashchange', onHashChange)
-
+        handler(window.location.hash)
     }
 
     navigate = (routingString: string) => {

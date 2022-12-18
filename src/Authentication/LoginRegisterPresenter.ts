@@ -56,12 +56,10 @@ export class LoginRegisterPresenter {
     }
 
     validateForm = () => {
-        console.log(`email: [${this.email}]`)
         if (this.email === '') {
             this._messagePresenter.addUiMessage('No email')
         }
 
-        console.log(`password: [${this.password}]`)
         if (this.password === '') {
             this._messagePresenter.addUiMessage('No password')
         }
