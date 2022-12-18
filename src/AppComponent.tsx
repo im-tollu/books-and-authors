@@ -3,8 +3,14 @@ import React, { useEffect } from 'react';
 import { AppPresenter } from './AppPresenter';
 import { LoginRegisterComponent } from './Authentication/LoginRegisterComponent';
 import { useInjection } from './Core/Providers/Injection';
+import { HomeComponent } from './Home/HomeComponent';
 import { RouteId } from './Routing/RouteDefinitions';
 import { Router } from './Routing/Router';
+
+interface RenderedComponent {
+  id: RouteId,
+  component: JSX.Element
+}
 
 export const AppComponent: React.FC = observer(() => {
   const presenter = useInjection<AppPresenter>(AppPresenter)
@@ -12,6 +18,13 @@ export const AppComponent: React.FC = observer(() => {
   useEffect(() => {
 
   }, [])
+
+  const renderedComponents: RenderedComponent[] = [
+    {
+      id: RouteId.HomeRoute,
+      component: <HomeComponent key={RouteId.HomeRoute} />
+    }
+  ]
 
   if (presenter.currentRouteId === RouteId.LoginRoute) {
     return (

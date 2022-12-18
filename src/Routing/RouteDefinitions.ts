@@ -1,17 +1,29 @@
 export enum RouteId {
     LoginRoute,
     HomeRoute,
+    NotFoundRoute,
 }
 
-interface RouteDefinition {
-    path: string[]
+export interface RouteDefinition {
+    routeId: RouteId,
+    path: string[],
+    isSecure: boolean,
 }
 
-export const routeDefinitions: Record<RouteId, RouteDefinition> = {
-    [RouteId.LoginRoute]: {
-        path: ['login']
+export const routeDefinitions: RouteDefinition[] = [
+    {
+        routeId: RouteId.LoginRoute,
+        path: ['login'],
+        isSecure: false,
     },
-    [RouteId.HomeRoute]: {
-        path: []
+    {
+        routeId: RouteId.HomeRoute,
+        path: [],
+        isSecure: true,
     },
-}
+    {
+        routeId: RouteId.NotFoundRoute,
+        path: ['not-found'],
+        isSecure: false,
+    }
+]
