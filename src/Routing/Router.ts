@@ -40,6 +40,11 @@ export class Router {
 
     onRoute = (routingString: string) => {
         const routeId = parseRoute(routingString)
+        if (routeId === null) {
+            this.navigate(RouteId.NotFoundRoute)
+            return
+        }
+
         const routeDefinition = routeDefinitions.find(route => route.routeId === routeId)!
         if (routeDefinition.isSecure && !this._userModel.isLoggedIn) {
             this.navigate(RouteId.LoginRoute)
@@ -52,7 +57,7 @@ export class Router {
     }
 }
 
-function parseRoute(routingString: string): RouteId {
+function parseRoute(routingString: string): RouteId | null {
     if (routingString === '' || routingString === ROUTING_PREFIX) {
         return RouteId.HomeRoute
     }
@@ -60,15 +65,15 @@ function parseRoute(routingString: string): RouteId {
     if (!routingString.startsWith(ROUTING_PREFIX)) {
         throw new Error(`Invalid routing string prefix: ${routingString}`)
     }
-    const strippedRoutingString = routingString.substring(ROUTING_PREFIX.length)
 
+    const strippedRoutingString = routingString.substring(ROUTING_PREFIX.length)
     for (const routeDefinition of routeDefinitions) {
         if (routingStringMatches(strippedRoutingString, routeDefinition)) {
             return routeDefinition.routeId
         }
     }
 
-    return RouteId.NotFoundRoute
+    return null
 }
 
 
