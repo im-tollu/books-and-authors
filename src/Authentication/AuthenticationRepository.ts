@@ -4,7 +4,7 @@ import { Router } from '../Routing/Router'
 import { UserModel } from '../Authentication/UserModel'
 import { TYPE } from '../Core/Types'
 import type { IApiGateway } from '../Core/IApiGateway'
-import { MessageSource, MessagesRepository } from '../Core/Messages/MessagesRepository'
+import { MessagesRepository } from '../Core/Messages/MessagesRepository'
 import { RouteId } from '../Routing/RouteDefinitions'
 
 interface LoginDto {
@@ -19,10 +19,6 @@ interface RegisterDto {
 
 export interface ApiMessage {
     message: string
-}
-
-interface RegisterResponseDto {
-
 }
 
 @injectable()
@@ -51,10 +47,7 @@ export class AuthenticationRepository {
             this._router.navigate(RouteId.HomeRoute)
         } else {
             const messageDto = responseDto.result as ApiMessage
-            this._messagesRepository.addMessage({
-                message: messageDto.message,
-                source: MessageSource.Api
-            })
+            this._messagesRepository.addError(messageDto.message)
         }
     }
 
@@ -70,10 +63,7 @@ export class AuthenticationRepository {
             this._userModel.token = registerDto.token
         } else {
             const messageDto = responseDto.result as ApiMessage
-            this._messagesRepository.addMessage({
-                message: messageDto.message,
-                source: MessageSource.Api
-            })
+            this._messagesRepository.addError(messageDto.message)
         }
     }
 

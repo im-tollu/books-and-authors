@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify'
 import { makeObservable, action, computed } from 'mobx'
-import { MessageSource, MessagesRepository } from './MessagesRepository'
+import { MessageLevel, MessagesRepository } from './MessagesRepository'
 
 @injectable()
 export class MessagesPresenter {
@@ -9,42 +9,39 @@ export class MessagesPresenter {
         @inject(MessagesRepository) private _messagesRepository: MessagesRepository
     ) {
         makeObservable(this, {
-            apiMessages: computed,
-            uiMessages: computed,
+            errors: computed,
+            warnings: computed,
+            successes: computed,
             hasMessages: computed,
             reset: action,
         })
     }
 
-    get apiMessages(): string[] {
-        return this.getMessagesOfSource(MessageSource.Api)
+    get errors(): string[] {
+        return this.getMessagesOfLevel(MessageLevel.Error)
     }
 
-    get uiMessages(): string[] {
-        return this.getMessagesOfSource(MessageSource.Ui)
+    get warnings(): string[] {
+        return this.getMessagesOfLevel(MessageLevel.Warning)
+    }
+
+    get successes(): string[] {
+        return this.getMessagesOfLevel(MessageLevel.Success)
     }
 
     get hasMessages() {
         return this._messagesRepository.messages.length > 0
     }
 
-    addUiMessage = (message: string) => {
-        this._messagesRepository.addMessage({
-            message,
-            source: MessageSource.Ui
-        })
-    }
+    addError = this._messagesRepository.addError
 
-    addApiMessage = (message: string) => {
-        this._messagesRepository.addMessage({
-            message,
-            source: MessageSource.Api
-        })
-    }
+    addWarning = this._messagesRepository.addWarning
 
-    getMessagesOfSource = (source: MessageSource): string[] => {
+    addSuccess = this._messagesRepository.addSuccess
+
+    getMessagesOfLevel = (level: MessageLevel): string[] => {
         return this._messagesRepository.messages
-            .filter(message => message.source === source)
+            .filter(message => message.level === level)
             .map(message => message.message)
     }
 

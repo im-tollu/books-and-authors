@@ -57,11 +57,11 @@ export class LoginRegisterPresenter {
 
     validateForm = () => {
         if (this.email === '') {
-            this._messagePresenter.addUiMessage('No email')
+            this._messagePresenter.addWarning('No email')
         }
 
         if (this.password === '') {
-            this._messagePresenter.addUiMessage('No password')
+            this._messagePresenter.addWarning('No password')
         }
     }
 

@@ -1,15 +1,16 @@
 import { injectable } from 'inversify'
 import { action, makeObservable, observable } from 'mobx'
 
-export enum MessageSource {
-    Api,
-    Ui
+export enum MessageLevel {
+    Success,
+    Warning,
+    Error
 }
 
 
 export interface Message {
     message: string
-    source: MessageSource
+    level: MessageLevel
 }
 
 @injectable()
@@ -31,5 +32,26 @@ export class MessagesRepository {
 
     reset = () => {
         this.messages = []
+    }
+
+    addError = (message: string) => {
+        this.addMessage({
+            message,
+            level: MessageLevel.Error
+        })
+    }
+
+    addWarning = (message: string) => {
+        this.addMessage({
+            message,
+            level: MessageLevel.Warning
+        })
+    }
+
+    addSuccess = (message: string) => {
+        this.addMessage({
+            message,
+            level: MessageLevel.Success
+        })
     }
 }
