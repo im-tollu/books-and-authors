@@ -135,8 +135,6 @@ describe('authentication', () => {
             expect(userModel.isLoggedIn).toEqual(false)
             expect(messagesPresenter.errors).toContain('Failed: credentials not valid must be (email and >3 chars on password).')
         })
-
-        it.todo('should clear messages on retrying registration')
     })
 
     describe('login', () => {
@@ -177,8 +175,6 @@ describe('authentication', () => {
             expect(messagesPresenter.errors).toContain('Failed: no user record.')
             expect(routingGateway.navigate).not.toBeCalled()
         })
-
-        it.todo('should clear messages on retrying login')
     })
 
     describe('logout', () => {

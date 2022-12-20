@@ -5,9 +5,12 @@ import { Router } from './Router'
 import { initTestApp } from '../TestTools/AppTestHarness'
 import { IRoutingGateway } from './IRoutingGateway'
 import { TYPE } from '../Core/Types'
+import { MessagesPresenter } from '../Core/Messages/MessagesPresenter'
+import exp from 'constants'
 
 interface RouterApp {
-    router: Router
+    router: Router,
+    messagesPresenter: MessagesPresenter
     userModel: UserModel
     routingGateway: IRoutingGateway
 }
@@ -19,6 +22,7 @@ describe('Router', () => {
         const container = initTestApp()
         app = {
             router: container.get(Router),
+            messagesPresenter: container.get(MessagesPresenter),
             userModel: container.get(UserModel),
             routingGateway: container.get<IRoutingGateway>(TYPE.IRoutingGateway),
         }
@@ -45,5 +49,19 @@ describe('Router', () => {
         router.onRoute('#!unknown-route')
 
         expect(routingGateway.navigate).toBeCalledWith('#!not-found')
+    })
+
+    it('should clear messages when navigating', async () => {
+        const { router, messagesPresenter } = app!
+        messagesPresenter.addError('Some error')
+        messagesPresenter.addWarning('Some warning')
+        messagesPresenter.addSuccess('Success')
+
+        router.navigate(RouteId.HomeRoute)
+
+        expect(messagesPresenter.hasMessages).toEqual(false)
+        expect(messagesPresenter.errors).toEqual([])
+        expect(messagesPresenter.warnings).toEqual([])
+        expect(messagesPresenter.successes).toEqual([])
     })
 })

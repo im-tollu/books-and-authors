@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify'
 import { makeObservable, observable } from 'mobx'
 import { UserModel } from '../Authentication/UserModel'
+import { MessagesPresenter } from '../Core/Messages/MessagesPresenter'
 import { TYPE } from '../Core/Types'
 import type { IRoutingGateway } from './IRoutingGateway'
 import { RouteDefinition, routeDefinitions, RouteId } from './RouteDefinitions'
@@ -18,6 +19,7 @@ export class Router {
     constructor(
         @inject(TYPE.IRoutingGateway) private _gateway: IRoutingGateway,
         @inject(UserModel) private _userModel: UserModel,
+        @inject(MessagesPresenter) private _messages: MessagesPresenter,
     ) {
         this.currentRoute = {
             routeId: RouteId.LoginRoute
@@ -35,6 +37,7 @@ export class Router {
         const pathString = routeDefinition.path.join('/')
         const routingString = `${ROUTING_PREFIX}${pathString}`
         console.log(`navigating to ${routingString}`)
+        this._messages.reset()
         this._gateway.navigate(routingString)
     }
 
