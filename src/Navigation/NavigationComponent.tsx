@@ -15,13 +15,13 @@ export const NavigationComponent: React.FC = observer(() => {
             {presenter.viewModel.menuItems.map((menuItem) => {
                 return (
                     <div
-                        key={menuItem.id}
+                        key={menuItem.routeId}
                         className="navigation-item"
                         style={{
                             backgroundColor: '#3DE7CF'
                         }}
                         onClick={() => {
-                            presenter.goToId(menuItem.id)
+                            presenter.goToId(menuItem.routeId)
                         }}
                     >
                         {menuItem.visibleName}

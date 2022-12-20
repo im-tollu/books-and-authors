@@ -7,11 +7,11 @@ import { Router } from '../Routing/Router'
 
 interface BackTarget {
     visible: boolean
-    id: RouteId | null
+    routeId: RouteId | null
 }
 
 interface MenuItem {
-    id: RouteId
+    routeId: RouteId
     visibleName: string
 }
 
@@ -37,8 +37,13 @@ export class NavigationPresenter {
         const vm: Menu = {
             showBack: false,
             currentSelectedVisibleName: '',
-            currentSelectedBackTarget: { visible: false, id: null },
-            menuItems: []
+            currentSelectedBackTarget: { visible: false, routeId: null },
+            menuItems: [
+                {
+                    routeId: RouteId.HomeRoute,
+                    visibleName: 'Home'
+                }
+            ]
         }
 
         let currentNode = this._navigationRepository.currentNode
@@ -52,7 +57,7 @@ export class NavigationPresenter {
             if (currentNode.parent) {
                 vm.currentSelectedBackTarget = {
                     visible: true,
-                    id: currentNode.parent.model.id
+                    routeId: currentNode.parent.model.routeId
                 }
                 vm.showBack = true
             }
