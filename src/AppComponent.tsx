@@ -4,11 +4,12 @@ import { AppPresenter } from './AppPresenter';
 import { LoginRegisterComponent } from './Authentication/LoginRegisterComponent';
 import { useInjection } from './Core/Providers/Injection';
 import { HomeComponent } from './Home/HomeComponent';
+import { NavigationComponent } from './Navigation/NavigationComponent';
 import { RouteId } from './Routing/RouteDefinitions';
 import { Router } from './Routing/Router';
 
 interface RenderedComponent {
-  id: RouteId,
+  routeId: RouteId,
   component: JSX.Element
 }
 
@@ -19,13 +20,6 @@ export const AppComponent: React.FC = observer(() => {
 
   }, [])
 
-  const renderedComponents: RenderedComponent[] = [
-    {
-      id: RouteId.HomeRoute,
-      component: <HomeComponent key={RouteId.HomeRoute} />
-    }
-  ]
-
   if (presenter.currentRouteId === RouteId.LoginRoute) {
     return (
       <div className="container">
@@ -34,14 +28,32 @@ export const AppComponent: React.FC = observer(() => {
     )
   }
 
+  const renderedComponents: RenderedComponent[] = [
+    {
+      routeId: RouteId.HomeRoute,
+      component: <HomeComponent key={RouteId.HomeRoute} />
+    }
+  ]
+
   return (
     <div className="container">
-      <h1>{presenter.appName}</h1>
-
-      <dl>
-        <dt>Current route from Presenter</dt>
-        <dd>{presenter.currentRouteId}</dd>
-      </dl>
+      <div className="w3-row">
+        <div className="w3-col s4 w3-center">
+          <NavigationComponent />
+        </div>
+        <div className="w3-col s8 w3-left">
+          {currentComponent(presenter.currentRouteId)}
+        </div>
+      </div>
     </div>
   );
 })
+
+const currentComponent = (routeId: RouteId): JSX.Element => {
+  switch (routeId) {
+    case RouteId.HomeRoute:
+      return <HomeComponent key={RouteId.HomeRoute} />
+    default:
+      throw new Error(`Component not found for routeId [${routeId}]`)
+  }
+}
