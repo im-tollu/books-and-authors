@@ -7,6 +7,7 @@ import { IRoutingGateway } from "../Routing/IRoutingGateway"
 import { RouteId } from "../Routing/RouteDefinitions"
 import { Router } from "../Routing/Router"
 import { initTestApp } from "../TestTools/AppTestHarness"
+import { GetFailedRegistrationStub } from "../TestTools/GetFailedRegistrationStub"
 import { GetSuccessfulRegistrationStub } from "../TestTools/GetSuccessfulRegistrationStub"
 import { mockResolve } from "../TestTools/mockingUtils"
 import { AuthenticationRepository } from "./AuthenticationRepository"
@@ -78,11 +79,46 @@ describe('authentication', () => {
                 )
             expect(userModel.token).toEqual('a@b1234.com')
             expect(userModel.isLoggedIn).toEqual(true)
-            expect(messagesPresenter.successes).toEqual(['Success: Limited to one test account per trainee!'])
+            expect(messagesPresenter.successes).toContain('Success: Limited to one test account per trainee!')
         })
 
         it('no e-mail provided', async () => {
+            const { loginRegisterPresenter, messagesPresenter, userModel, apiGateway } = app!
 
+            loginRegisterPresenter.option = LoginRegisterOption.Register
+            loginRegisterPresenter.email = ''
+            loginRegisterPresenter.password = 'p@ssw0rd'
+            await loginRegisterPresenter.submitForm()
+
+            expect(apiGateway.post).not.toBeCalled()
+            expect(userModel.isLoggedIn).toEqual(false)
+            expect(messagesPresenter.warnings).toContain('No email')
+        })
+
+        it('no password provided', async () => {
+            const { loginRegisterPresenter, messagesPresenter, userModel, apiGateway } = app!
+
+            loginRegisterPresenter.option = LoginRegisterOption.Register
+            loginRegisterPresenter.email = 'joe@example.org'
+            loginRegisterPresenter.password = ''
+            await loginRegisterPresenter.submitForm()
+
+            expect(apiGateway.post).not.toBeCalled()
+            expect(userModel.isLoggedIn).toEqual(false)
+            expect(messagesPresenter.warnings).toContain('No password')
+        })
+
+        it('invalid credentials sent to API', async () => {
+            const { loginRegisterPresenter, userModel, messagesPresenter, apiGateway } = app!
+            mockResolve(apiGateway.post, GetFailedRegistrationStub())
+
+            loginRegisterPresenter.option = LoginRegisterOption.Register
+            loginRegisterPresenter.email = 'joe@example.org'
+            loginRegisterPresenter.password = 'p@ssw0rd'
+            await loginRegisterPresenter.submitForm()
+
+            expect(userModel.isLoggedIn).toEqual(false)
+            expect(messagesPresenter.errors).toContain('Failed: credentials not valid must be (email and >3 chars on password).')
         })
     })
 
