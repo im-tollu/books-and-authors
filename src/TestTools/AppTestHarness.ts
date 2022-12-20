@@ -3,12 +3,7 @@ import { createContainer, Gateways } from "../AppIOC"
 import { IApiGateway } from "../Core/IApiGateway"
 import { IRoutingGateway } from "../Routing/IRoutingGateway"
 
-export interface TestHarness {
-    gateways: Gateways,
-    container: Container
-}
-
-export const initTestApp = (): TestHarness => {
+export const initTestApp = (): Container => {
     const apiGateway: IApiGateway = {
         get: jest.fn(),
         post: jest.fn(),
@@ -22,10 +17,6 @@ export const initTestApp = (): TestHarness => {
         apiGateway,
         routingGateway,
     }
-    const container = createContainer(gateways)
 
-    return {
-        gateways,
-        container,
-    }
+    return createContainer(gateways)
 }

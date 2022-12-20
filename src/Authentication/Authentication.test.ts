@@ -1,4 +1,8 @@
+import { Type } from "ajv/dist/compile/util"
+import { IApiGateway } from "../Core/IApiGateway"
 import { MessagesPresenter } from "../Core/Messages/MessagesPresenter"
+import { TYPE } from "../Core/Types"
+import { IRoutingGateway } from "../Routing/IRoutingGateway"
 import { RouteId } from "../Routing/RouteDefinitions"
 import { Router } from "../Routing/Router"
 import { initTestApp } from "../TestTools/AppTestHarness"
@@ -10,12 +14,13 @@ import { UserModel } from "./UserModel"
 describe('authentication', () => {
     describe('init', () => {
         it('unauthenticated user is redirected from home route to login route', () => {
-            const { gateways, container } = initTestApp()
-            const router = container.get(Router)
-            const userModel = container.get(UserModel)
+            const app = initTestApp()
+            const router = app.get(Router)
+            const userModel = app.get(UserModel)
+            const routingGateway = app.get<IRoutingGateway>(TYPE.IRoutingGateway)
 
             router.onRoute('#!')
-            expect(gateways.routingGateway.navigate).toBeCalledWith('#!login')
+            expect(routingGateway.navigate).toBeCalledWith('#!login')
             expect(router.currentRoute.routeId).toBe(RouteId.LoginRoute)
             expect(userModel.isLoggedIn).toEqual(false)
         })
@@ -26,14 +31,15 @@ describe('authentication', () => {
     })
 
     describe('register', () => {
-        const { gateways, container } = initTestApp()
-        const router = container.get(Router)
-        const presenter = container.get(LoginRegisterPresenter)
-        const userModel = container.get(UserModel)
-        const messagesPresenter = container.get(MessagesPresenter)
+        const app = initTestApp()
+        const router = app.get(Router)
+        const presenter = app.get(LoginRegisterPresenter)
+        const userModel = app.get(UserModel)
+        const messagesPresenter = app.get(MessagesPresenter)
+        const apiGateway = app.get<IApiGateway>(TYPE.IApiGateway)
 
         it('succeeds', async () => {
-            mockResolve(gateways.apiGateway.post, GetSuccessfulRegistrationStub())
+            mockResolve(apiGateway.post, GetSuccessfulRegistrationStub())
             router.onRoute('#!login')
             expect(router.currentRoute.routeId).toBe(RouteId.LoginRoute)
 
@@ -42,7 +48,7 @@ describe('authentication', () => {
             presenter.password = 'p@ssw0rd'
             await presenter.submitForm()
 
-            expect(gateways.apiGateway.post)
+            expect(apiGateway.post)
                 .toBeCalledWith(
                     '/register',
                     {
