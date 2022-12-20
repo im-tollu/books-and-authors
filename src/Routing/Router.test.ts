@@ -6,19 +6,32 @@ import { initTestApp } from '../TestTools/AppTestHarness'
 import { IRoutingGateway } from './IRoutingGateway'
 import { TYPE } from '../Core/Types'
 
+interface RouterApp {
+    router: Router
+    userModel: UserModel
+    routingGateway: IRoutingGateway
+}
+
 describe('Router', () => {
+    let app: RouterApp | null = null
+
+    beforeEach(() => {
+        const container = initTestApp()
+        app = {
+            router: container.get(Router),
+            userModel: container.get(UserModel),
+            routingGateway: container.get<IRoutingGateway>(TYPE.IRoutingGateway),
+        }
+    })
+
     it('subscribes to route changes', () => {
-        const app = initTestApp()
-        const router = app.get(Router)
-        const routingGateway = app.get<IRoutingGateway>(TYPE.IRoutingGateway)
+        const { router, routingGateway } = app!
 
         expect(routingGateway.subscribe).toBeCalledWith(router.onRoute)
     })
 
     it('authenticated user can navigate to target route', () => {
-        const app = initTestApp()
-        const userModel = app.get(UserModel)
-        const router = app.get(Router)
+        const { router, userModel } = app!
 
         userModel.token = 'authToken'
         router.onRoute('#!')
@@ -27,9 +40,7 @@ describe('Router', () => {
     })
 
     it('user is redirected to not-found route when provided unknown path', () => {
-        const app = initTestApp()
-        const router = app.get(Router)
-        const routingGateway = app.get<IRoutingGateway>(TYPE.IRoutingGateway)
+        const { router, routingGateway } = app!
 
         router.onRoute('#!unknown-route')
 
