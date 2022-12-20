@@ -1,5 +1,3 @@
-import { Type } from "ajv/dist/compile/util"
-import { Container } from "inversify"
 import { IApiGateway } from "../Core/IApiGateway"
 import { MessagesPresenter } from "../Core/Messages/MessagesPresenter"
 import { TYPE } from "../Core/Types"
@@ -8,7 +6,9 @@ import { RouteId } from "../Routing/RouteDefinitions"
 import { Router } from "../Routing/Router"
 import { initTestApp } from "../TestTools/AppTestHarness"
 import { GetFailedRegistrationStub } from "../TestTools/GetFailedRegistrationStub"
+import { GetFailedUserLoginStub } from "../TestTools/GetFailedUserLoginStub"
 import { GetSuccessfulRegistrationStub } from "../TestTools/GetSuccessfulRegistrationStub"
+import { GetSuccessfulUserLoginStub } from "../TestTools/GetSuccessfulUserLoginStub"
 import { mockResolve } from "../TestTools/mockingUtils"
 import { AuthenticationRepository } from "./AuthenticationRepository"
 import { LoginRegisterOption, LoginRegisterPresenter } from "./LoginRegisterPresenter"
@@ -41,19 +41,33 @@ describe('authentication', () => {
     })
 
     describe('init', () => {
-        it('unauthenticated user should start at login route', () => {
+        it('should start with login route', () => {
+            const { router } = app!
+
+            expect(router.currentRoute.routeId).toEqual(RouteId.LoginRoute)
+        })
+    })
+
+    describe('routing', () => {
+        it('should navigate to login route', () => {
+            const { router } = app!
+            router.currentRoute = {
+                routeId: RouteId.NotFoundRoute
+            }
+
+            router.onRoute('#!login')
+
+            expect(router.currentRoute.routeId).toEqual(RouteId.LoginRoute)
+        })
+
+        it('unauthenticated user accessing private route should be redirected to login route', () => {
             const { router, routingGateway, userModel } = app!
 
             router.onRoute('')
 
             expect(routingGateway.navigate).toBeCalledWith('#!login')
-            expect(router.currentRoute.routeId).toBe(RouteId.LoginRoute)
             expect(userModel.isLoggedIn).toEqual(false)
         })
-    })
-
-    describe('routing', () => {
-
     })
 
     describe('register', () => {
@@ -61,12 +75,10 @@ describe('authentication', () => {
             const { router, loginRegisterPresenter, userModel, messagesPresenter, apiGateway } = app!
             mockResolve(apiGateway.post, GetSuccessfulRegistrationStub())
 
-            router.onRoute('#!login')
-            expect(router.currentRoute.routeId).toBe(RouteId.LoginRoute)
-
             loginRegisterPresenter.option = LoginRegisterOption.Register
             loginRegisterPresenter.email = 'joe@example.org'
             loginRegisterPresenter.password = 'p@ssw0rd'
+
             await loginRegisterPresenter.submitForm()
 
             expect(apiGateway.post)
@@ -88,6 +100,7 @@ describe('authentication', () => {
             loginRegisterPresenter.option = LoginRegisterOption.Register
             loginRegisterPresenter.email = ''
             loginRegisterPresenter.password = 'p@ssw0rd'
+
             await loginRegisterPresenter.submitForm()
 
             expect(apiGateway.post).not.toBeCalled()
@@ -101,6 +114,7 @@ describe('authentication', () => {
             loginRegisterPresenter.option = LoginRegisterOption.Register
             loginRegisterPresenter.email = 'joe@example.org'
             loginRegisterPresenter.password = ''
+
             await loginRegisterPresenter.submitForm()
 
             expect(apiGateway.post).not.toBeCalled()
@@ -115,19 +129,56 @@ describe('authentication', () => {
             loginRegisterPresenter.option = LoginRegisterOption.Register
             loginRegisterPresenter.email = 'joe@example.org'
             loginRegisterPresenter.password = 'p@ssw0rd'
+
             await loginRegisterPresenter.submitForm()
 
             expect(userModel.isLoggedIn).toEqual(false)
             expect(messagesPresenter.errors).toContain('Failed: credentials not valid must be (email and >3 chars on password).')
         })
+
+        it.todo('should clear messages on retrying registration')
     })
 
     describe('login', () => {
-        it.todo('should go to home route on success (and populate UserModel)')
+        it('should go to home route on success (and populate UserModel)', async () => {
+            const { loginRegisterPresenter, userModel, messagesPresenter, apiGateway, routingGateway } = app!
+            mockResolve(apiGateway.post, GetSuccessfulUserLoginStub())
 
-        it.todo('should not leave login route on failed login')
+            loginRegisterPresenter.option = LoginRegisterOption.Login
+            loginRegisterPresenter.email = 'joe@example.org'
+            loginRegisterPresenter.password = 'p@ssw0rd'
 
-        it.todo('should clear messages on route change')
+            await loginRegisterPresenter.submitForm()
+
+            expect(apiGateway.post)
+                .toBeCalledWith(
+                    '/login',
+                    {
+                        email: 'joe@example.org',
+                        password: 'p@ssw0rd'
+                    }
+                )
+            expect(userModel.token).toEqual('a@b1234.com')
+            expect(userModel.isLoggedIn).toEqual(true)
+            expect(routingGateway.navigate).toBeCalledWith('#!')
+        })
+
+        it('should not leave login route on failed login', async () => {
+            const { loginRegisterPresenter, userModel, messagesPresenter, apiGateway, routingGateway } = app!
+            mockResolve(apiGateway.post, GetFailedUserLoginStub())
+
+            loginRegisterPresenter.option = LoginRegisterOption.Login
+            loginRegisterPresenter.email = 'joe@example.org'
+            loginRegisterPresenter.password = 'p@ssw0rd'
+
+            await loginRegisterPresenter.submitForm()
+
+            expect(userModel.isLoggedIn).toEqual(false)
+            expect(messagesPresenter.errors).toContain('Failed: no user record.')
+            expect(routingGateway.navigate).not.toBeCalled()
+        })
+
+        it.todo('should clear messages on retrying login')
     })
 
     describe('logout', () => {
