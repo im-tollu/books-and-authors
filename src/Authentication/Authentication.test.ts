@@ -41,10 +41,10 @@ describe('authentication', () => {
     })
 
     describe('init', () => {
-        it('unauthenticated user is redirected from home route to login route', () => {
+        it('unauthenticated user should start at login route', () => {
             const { router, routingGateway, userModel } = app!
 
-            router.onRoute('#!')
+            router.onRoute('')
 
             expect(routingGateway.navigate).toBeCalledWith('#!login')
             expect(router.currentRoute.routeId).toBe(RouteId.LoginRoute)
@@ -123,10 +123,26 @@ describe('authentication', () => {
     })
 
     describe('login', () => {
+        it.todo('should go to home route on success (and populate UserModel)')
 
+        it.todo('should not leave login route on failed login')
+
+        it.todo('should clear messages on route change')
     })
 
     describe('logout', () => {
+        it('should logout', async () => {
+            const { router, loginRegisterPresenter, userModel, routingGateway } = app!
+            userModel.token = 'a@b1234.com'
+            router.currentRoute = {
+                routeId: RouteId.HomeRoute
+            }
 
+            await loginRegisterPresenter.logOut()
+
+            expect(userModel.token).toBeNull()
+            expect(userModel.isLoggedIn).toEqual(false)
+            expect(routingGateway.navigate).toBeCalledWith('#!login')
+        })
     })
 })

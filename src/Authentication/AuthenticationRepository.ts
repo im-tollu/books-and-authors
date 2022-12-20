@@ -42,7 +42,6 @@ export class AuthenticationRepository {
 
         if (responseDto.success) {
             const loginDto = responseDto.result as LoginDto
-            this._userModel.email = loginDto.email
             this._userModel.token = loginDto.token
             this._router.navigate(RouteId.HomeRoute)
         } else {
@@ -68,7 +67,6 @@ export class AuthenticationRepository {
     }
 
     logOut = async () => {
-        this._userModel.email = null
         this._userModel.token = null
         this._router.navigate(RouteId.LoginRoute)
     }
