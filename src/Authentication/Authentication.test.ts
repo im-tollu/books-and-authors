@@ -3,6 +3,7 @@ import { RouteId } from "../Routing/RouteDefinitions"
 import { Router } from "../Routing/Router"
 import { initTestApp } from "../TestTools/AppTestHarness"
 import { GetSuccessfulRegistrationStub } from "../TestTools/GetSuccessfulRegistrationStub"
+import { mockResolve } from "../TestTools/mockingUtils"
 import { LoginRegisterOption, LoginRegisterPresenter } from "./LoginRegisterPresenter"
 import { UserModel } from "./UserModel"
 
@@ -32,8 +33,7 @@ describe('authentication', () => {
         const messagesPresenter = container.get(MessagesPresenter)
 
         it('succeeds', async () => {
-            (gateways.apiGateway.post as jest.Mock)
-                .mockResolvedValue(GetSuccessfulRegistrationStub())
+            mockResolve(gateways.apiGateway.post, GetSuccessfulRegistrationStub())
             router.onRoute('#!login')
             expect(router.currentRoute.routeId).toBe(RouteId.LoginRoute)
 
@@ -52,7 +52,11 @@ describe('authentication', () => {
                 )
             expect(userModel.token).toEqual('a@b1234.com')
             expect(userModel.isLoggedIn).toEqual(true)
-            expect(messagesPresenter.successes).toEqual(['Registration successful!'])
+            expect(messagesPresenter.successes).toEqual(['Success: Limited to one test account per trainee!'])
+        })
+
+        it('no e-mail provided', async () => {
+
         })
     })
 

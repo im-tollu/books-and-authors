@@ -13,8 +13,8 @@ interface LoginDto {
 }
 
 interface RegisterDto {
-    email: string
     token: string
+    message: string
 }
 
 export interface ApiMessage {
@@ -59,9 +59,8 @@ export class AuthenticationRepository {
 
         if (responseDto.success) {
             const registerDto = responseDto.result as RegisterDto
-            this._userModel.email = registerDto.email
             this._userModel.token = registerDto.token
-            this._messagesRepository.addSuccess('Registration successful!')
+            this._messagesRepository.addSuccess(registerDto.message)
         } else {
             const messageDto = responseDto.result as ApiMessage
             this._messagesRepository.addError(messageDto.message)
