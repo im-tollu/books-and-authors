@@ -1,45 +1,13 @@
-import { Container } from 'inversify'
 import { } from 'jest'
 import 'reflect-metadata'
-import { createContainer, Gateways } from '../AppIOC'
 import { UserModel } from '../Authentication/UserModel'
-import { IApiGateway } from '../Core/IApiGateway'
-import { IRoutingGateway } from './IRoutingGateway'
 import { RouteId } from './RouteDefinitions'
 import { Router } from './Router'
-
-
-export interface TestHarness {
-    gateways: Gateways,
-    container: Container
-}
-
-function init(): TestHarness {
-    const apiGateway: IApiGateway = {
-        get: jest.fn(),
-        post: jest.fn(),
-        delete: jest.fn(),
-    }
-    const routingGateway: IRoutingGateway = {
-        subscribe: jest.fn(),
-        navigate: jest.fn(),
-    }
-    const gateways: Gateways = {
-        apiGateway,
-        routingGateway,
-    }
-    const container = createContainer(gateways)
-
-    return {
-        gateways,
-        container,
-    }
-}
+import { initTestApp, TestHarness } from '../TestTools/AppTestHarness'
 
 describe('Router', () => {
     it('unauthenticated user is redirected to login route', () => {
-        const { gateways, container } = init()
-
+        const { gateways, container } = initTestApp()
         const router = container.get(Router)
         expect(gateways.routingGateway.subscribe).toBeCalledWith(router.onRoute)
 
@@ -49,7 +17,7 @@ describe('Router', () => {
     })
 
     it('authenticated user can navigate to target route', () => {
-        const { container } = init()
+        const { container } = initTestApp()
 
         const userModel = container.get(UserModel)
         userModel.token = 'authToken'
@@ -60,7 +28,7 @@ describe('Router', () => {
     })
 
     it('user is redirected to not-found route when provided unknown path', () => {
-        const { gateways, container } = init()
+        const { gateways, container } = initTestApp()
 
         const router = container.get(Router)
 
