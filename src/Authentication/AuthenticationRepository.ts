@@ -61,6 +61,7 @@ export class AuthenticationRepository {
             const registerDto = responseDto.result as RegisterDto
             this._userModel.email = registerDto.email
             this._userModel.token = registerDto.token
+            this._messagesRepository.addSuccess('Registration successful!')
         } else {
             const messageDto = responseDto.result as ApiMessage
             this._messagesRepository.addError(messageDto.message)

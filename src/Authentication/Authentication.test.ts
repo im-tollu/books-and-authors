@@ -1,3 +1,4 @@
+import { MessagesPresenter } from "../Core/Messages/MessagesPresenter"
 import { RouteId } from "../Routing/RouteDefinitions"
 import { Router } from "../Routing/Router"
 import { initTestApp } from "../TestTools/AppTestHarness"
@@ -28,6 +29,7 @@ describe('authentication', () => {
         const router = container.get(Router)
         const presenter = container.get(LoginRegisterPresenter)
         const userModel = container.get(UserModel)
+        const messagesPresenter = container.get(MessagesPresenter)
 
         it('succeeds', async () => {
             (gateways.apiGateway.post as jest.Mock)
@@ -50,6 +52,7 @@ describe('authentication', () => {
                 )
             expect(userModel.token).toEqual('a@b1234.com')
             expect(userModel.isLoggedIn).toEqual(true)
+            expect(messagesPresenter.successes).toEqual(['Registration successful!'])
         })
     })
 
