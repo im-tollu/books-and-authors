@@ -1,7 +1,9 @@
 export enum RouteId {
-    LoginRoute,
-    HomeRoute,
-    NotFoundRoute,
+    LoginRoute = 'LoginRoute',
+    HomeRoute = 'HomeRoute',
+    BooksRoute = 'BooksRoute',
+    AuthorsRoute = 'AuthorsRoute',
+    NotFoundRoute = 'NotFoundRoute',
 }
 
 export interface RouteDefinition {

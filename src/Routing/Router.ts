@@ -33,7 +33,10 @@ export class Router {
     }
 
     navigate = (routeId: RouteId) => {
-        const routeDefinition = routeDefinitions[routeId]
+        console.log('RouteId:', routeId)
+        const routeDefinition = routeDefinitions
+            .find(routeDefinition => routeDefinition.routeId === routeId)!
+        console.log('Route definition:', JSON.stringify(routeDefinition, null, 2))
         const pathString = routeDefinition.path.join('/')
         const routingString = `${ROUTING_PREFIX}${pathString}`
         console.log(`navigating to ${routingString}`)

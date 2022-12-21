@@ -6,7 +6,6 @@ import { initTestApp } from '../TestTools/AppTestHarness'
 import { IRoutingGateway } from './IRoutingGateway'
 import { TYPE } from '../Core/Types'
 import { MessagesPresenter } from '../Core/Messages/MessagesPresenter'
-import exp from 'constants'
 
 interface RouterApp {
     router: Router,
