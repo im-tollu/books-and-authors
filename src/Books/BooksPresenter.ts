@@ -3,7 +3,7 @@ import { computed, makeObservable, observable } from "mobx";
 import { BooksRepository } from "./BooksRepository";
 
 export interface BooksViewModel {
-
+    books: string
 }
 
 @injectable()
@@ -22,7 +22,9 @@ export class BooksPresenter {
     }
 
     get viewModel(): BooksViewModel {
-        return {}
+        return {
+            books: 'none'
+        }
     }
 
     reset = () => {

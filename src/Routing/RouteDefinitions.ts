@@ -35,6 +35,11 @@ export class RouteDefinitions {
                 isSecure: true,
             },
             {
+                routeId: RouteId.BooksRoute,
+                path: ['books'],
+                isSecure: true,
+            },
+            {
                 routeId: RouteId.NotFoundRoute,
                 path: ['not-found'],
                 isSecure: false,

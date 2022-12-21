@@ -39,7 +39,14 @@ export class NavigationRepository {
             routeId: RouteId.HomeRoute,
             type: 'root',
             text: 'Home',
-            children: []
+            children: [
+                {
+                    routeId: RouteId.BooksRoute,
+                    type: 'menu',
+                    text: 'Books',
+                    children: []
+                }
+            ]
         })
 
         return root
