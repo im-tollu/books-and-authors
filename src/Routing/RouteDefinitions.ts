@@ -1,3 +1,6 @@
+import { inject, injectable } from "inversify";
+import { BooksRepository } from "../Books/BooksRepository";
+
 export enum RouteId {
     LoginRoute = 'LoginRoute',
     HomeRoute = 'HomeRoute',
@@ -12,20 +15,35 @@ export interface RouteDefinition {
     isSecure: boolean,
 }
 
-export const routeDefinitions: RouteDefinition[] = [
-    {
-        routeId: RouteId.LoginRoute,
-        path: ['login'],
-        isSecure: false,
-    },
-    {
-        routeId: RouteId.HomeRoute,
-        path: [],
-        isSecure: true,
-    },
-    {
-        routeId: RouteId.NotFoundRoute,
-        path: ['not-found'],
-        isSecure: false,
+@injectable()
+export class RouteDefinitions {
+    constructor(
+        @inject(BooksRepository) private _booksRepository: BooksRepository
+    ) {
     }
-]
+
+    get definitions(): RouteDefinition[] {
+        return [
+            {
+                routeId: RouteId.LoginRoute,
+                path: ['login'],
+                isSecure: false,
+            },
+            {
+                routeId: RouteId.HomeRoute,
+                path: [],
+                isSecure: true,
+            },
+            {
+                routeId: RouteId.NotFoundRoute,
+                path: ['not-found'],
+                isSecure: false,
+            }
+        ]
+    }
+
+    forRouteId(routeId: RouteId): RouteDefinition {
+        return this.definitions
+            .find(routeDefinition => routeDefinition.routeId === routeId)!
+    }
+}

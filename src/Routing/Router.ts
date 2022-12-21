@@ -4,7 +4,7 @@ import { UserModel } from '../Authentication/UserModel'
 import { MessagesPresenter } from '../Core/Messages/MessagesPresenter'
 import { TYPE } from '../Core/Types'
 import type { IRoutingGateway } from './IRoutingGateway'
-import { RouteDefinition, routeDefinitions, RouteId } from './RouteDefinitions'
+import { RouteDefinition, RouteDefinitions, RouteId } from './RouteDefinitions'
 
 export interface Route {
     routeId: RouteId
@@ -20,6 +20,7 @@ export class Router {
         @inject(TYPE.IRoutingGateway) private _gateway: IRoutingGateway,
         @inject(UserModel) private _userModel: UserModel,
         @inject(MessagesPresenter) private _messages: MessagesPresenter,
+        @inject(RouteDefinitions) private _routeDefinitions: RouteDefinitions
     ) {
         this.currentRoute = {
             routeId: RouteId.LoginRoute
@@ -34,8 +35,7 @@ export class Router {
 
     navigate = (routeId: RouteId) => {
         console.log('RouteId:', routeId)
-        const routeDefinition = routeDefinitions
-            .find(routeDefinition => routeDefinition.routeId === routeId)!
+        const routeDefinition = this._routeDefinitions.forRouteId(routeId)
         console.log('Route definition:', JSON.stringify(routeDefinition, null, 2))
         const pathString = routeDefinition.path.join('/')
         const routingString = `${ROUTING_PREFIX}${pathString}`
@@ -45,13 +45,13 @@ export class Router {
     }
 
     onRoute = (routingString: string) => {
-        const routeId = parseRoute(routingString)
+        const routeId = this.parseRoute(routingString)
         if (routeId === null) {
             this.navigate(RouteId.NotFoundRoute)
             return
         }
 
-        const routeDefinition = routeDefinitions.find(route => route.routeId === routeId)!
+        const routeDefinition = this._routeDefinitions.forRouteId(routeId)!
         if (routeDefinition.isSecure && !this._userModel.isLoggedIn) {
             this.navigate(RouteId.LoginRoute)
             return
@@ -61,26 +61,28 @@ export class Router {
             routeId
         }
     }
-}
 
-function parseRoute(routingString: string): RouteId | null {
-    if (routingString === '' || routingString === ROUTING_PREFIX) {
-        return RouteId.HomeRoute
-    }
-
-    if (!routingString.startsWith(ROUTING_PREFIX)) {
-        throw new Error(`Invalid routing string prefix: ${routingString}`)
-    }
-
-    const strippedRoutingString = routingString.substring(ROUTING_PREFIX.length)
-    for (const routeDefinition of routeDefinitions) {
-        if (routingStringMatches(strippedRoutingString, routeDefinition)) {
-            return routeDefinition.routeId
+    private parseRoute = (routingString: string): RouteId | null => {
+        if (routingString === '' || routingString === ROUTING_PREFIX) {
+            return RouteId.HomeRoute
         }
-    }
 
-    return null
+        if (!routingString.startsWith(ROUTING_PREFIX)) {
+            throw new Error(`Invalid routing string prefix: ${routingString}`)
+        }
+
+        const strippedRoutingString = routingString.substring(ROUTING_PREFIX.length)
+        for (const routeDefinition of this._routeDefinitions.definitions) {
+            if (routingStringMatches(strippedRoutingString, routeDefinition)) {
+                return routeDefinition.routeId
+            }
+        }
+
+        return null
+    }
 }
+
+
 
 
 function routingStringMatches(routingString: string, routeDefinition: RouteDefinition): boolean {
