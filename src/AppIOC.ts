@@ -1,5 +1,6 @@
 import { Container } from 'inversify'
 import { UserModel } from './Authentication/UserModel'
+import { BooksRepository } from './Books/BooksRepository'
 import { Config } from './Core/Config'
 import { HttpGateway } from './Core/HttpGateway'
 import { IApiGateway } from './Core/IApiGateway'
@@ -22,6 +23,7 @@ export function createContainer(gateways: Gateways = productionGateways): Contai
     container.bind<Router>(Router).toSelf().inSingletonScope()
     container.bind<MessagesRepository>(MessagesRepository).toSelf().inSingletonScope()
     container.bind<UserModel>(UserModel).toSelf().inSingletonScope()
+    container.bind<BooksRepository>(BooksRepository).toSelf().inSingletonScope()
 
     container.bind<IApiGateway>(TYPE.IApiGateway).toConstantValue(gateways.apiGateway)
     container.bind<IRoutingGateway>(TYPE.IRoutingGateway).toConstantValue(gateways.routingGateway)

@@ -2,6 +2,8 @@ import { observer } from 'mobx-react-lite'
 import React, { useEffect } from 'react';
 import { AppPresenter } from './AppPresenter';
 import { LoginRegisterComponent } from './Authentication/LoginRegisterComponent';
+import { AuthorsComponent } from './Authors/AuthorsComponent';
+import { BooksComponent } from './Books/BooksComponent';
 import { useInjection } from './Core/Providers/Injection';
 import { HomeComponent } from './Home/HomeComponent';
 import { NavigationComponent } from './Navigation/NavigationComponent';
@@ -53,6 +55,10 @@ const currentComponent = (routeId: RouteId): JSX.Element => {
   switch (routeId) {
     case RouteId.HomeRoute:
       return <HomeComponent key={RouteId.HomeRoute} />
+    case RouteId.BooksRoute:
+      return <BooksComponent key={RouteId.BooksRoute} />
+    case RouteId.AuthorsRoute:
+      return <AuthorsComponent key={RouteId.AuthorsRoute} />
     default:
       throw new Error(`Component not found for routeId [${routeId}]`)
   }
