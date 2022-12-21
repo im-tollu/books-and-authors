@@ -3,9 +3,10 @@ import TreeModel from 'tree-model'
 import { AuthenticationRepository } from '../Authentication/AuthenticationRepository'
 import { Router } from '../Routing/Router'
 import { makeObservable, computed, action } from 'mobx'
+import { RouteId } from '../Routing/RouteDefinitions'
 
 export interface NavigationNode {
-    id: string;
+    routeId: RouteId;
     type: string;
     text: string;
     children: NavigationNode[];
@@ -24,9 +25,10 @@ export class NavigationRepository {
     }
 
     get currentNode() {
-        return this.getTree().all((node) => {
-            return node.model.id === this._router.currentRoute.routeId
-        })[0]
+        return this.getTree().first((node) => {
+            const navigationNode: NavigationNode = node.model
+            return navigationNode.routeId === this._router.currentRoute.routeId
+        })
     }
 
 
@@ -34,7 +36,7 @@ export class NavigationRepository {
         let tree = new TreeModel()
 
         let root = tree.parse<NavigationNode>({
-            id: 'homeLink',
+            routeId: RouteId.HomeRoute,
             type: 'root',
             text: 'Home',
             children: []
@@ -45,6 +47,10 @@ export class NavigationRepository {
 
     back = () => {
         let currentNode = this.currentNode
-        this._router.navigate(currentNode.parent.model.id)
+        if (!currentNode) {
+            return
+        }
+        const parentNavigationNode: NavigationNode = currentNode.parent.model
+        this._router.navigate(parentNavigationNode.routeId)
     }
 }

@@ -50,9 +50,7 @@ export class NavigationPresenter {
 
         if (currentNode) {
             vm.currentSelectedVisibleName = this.visibleName(currentNode)
-            vm.menuItems = currentNode.children.map((node: Node<NavigationNode>) => {
-                return { id: node.model.id, visibleName: node.model.text }
-            })
+            vm.menuItems = currentNode.children.map(mapToMenuItem)
 
             if (currentNode.parent) {
                 vm.currentSelectedBackTarget = {
@@ -67,7 +65,9 @@ export class NavigationPresenter {
     }
 
     visibleName = (node: Node<NavigationNode>) => {
-        return node.model.text + ' > ' + node.model.id
+        const navigationNode: NavigationNode = node.model
+        console.log(`Visible name: ${navigationNode.text} ${navigationNode.routeId}`)
+        return navigationNode.text + ' > ' + navigationNode.routeId
     }
 
     back = () => {
@@ -76,5 +76,13 @@ export class NavigationPresenter {
 
     goToId = (routeId: RouteId) => {
         this._router.navigate(routeId)
+    }
+}
+
+const mapToMenuItem = (node: Node<NavigationNode>): MenuItem => {
+    const navigationNode: NavigationNode = node.model
+    return {
+        routeId: navigationNode.routeId,
+        visibleName: node.model.text
     }
 }
