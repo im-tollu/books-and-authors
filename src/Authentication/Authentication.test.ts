@@ -2,7 +2,7 @@ import { IApiGateway } from "../Core/IApiGateway"
 import { MessagesPresenter } from "../Core/Messages/MessagesPresenter"
 import { TYPE } from "../Core/Types"
 import { IRoutingGateway } from "../Routing/IRoutingGateway"
-import { RouteId } from "../Routing/RouteDefinitions"
+import { RouteDefinitions, RouteId } from "../Routing/RouteDefinitions"
 import { Router } from "../Routing/Router"
 import { initTestApp } from "../TestTools/AppTestHarness"
 import { GetFailedRegistrationStub } from "../TestTools/GetFailedRegistrationStub"
@@ -19,6 +19,7 @@ interface AuthenticationApp {
     authenticationRepository: AuthenticationRepository
     messagesPresenter: MessagesPresenter
     router: Router
+    routeDefinitions: RouteDefinitions
     userModel: UserModel
     routingGateway: IRoutingGateway
     apiGateway: IApiGateway
@@ -34,6 +35,7 @@ describe('authentication', () => {
             authenticationRepository: container.get(AuthenticationRepository),
             messagesPresenter: container.get(MessagesPresenter),
             router: container.get(Router),
+            routeDefinitions: container.get(RouteDefinitions),
             userModel: container.get(UserModel),
             routingGateway: container.get<IRoutingGateway>(TYPE.IRoutingGateway),
             apiGateway: container.get<IApiGateway>(TYPE.IApiGateway)
@@ -44,20 +46,21 @@ describe('authentication', () => {
         it('should start with login route', () => {
             const { router } = app!
 
-            expect(router.currentRoute.routeId).toEqual(RouteId.LoginRoute)
+            expect(router.currentRoute.routeDefinition.routeId)
+                .toEqual(RouteId.LoginRoute)
         })
     })
 
     describe('routing', () => {
         it('should navigate to login route', () => {
-            const { router } = app!
+            const { router, routeDefinitions } = app!
             router.currentRoute = {
-                routeId: RouteId.NotFoundRoute
+                routeDefinition: routeDefinitions.forRouteId(RouteId.NotFoundRoute)
             }
 
             router.onRoute('#!login')
 
-            expect(router.currentRoute.routeId).toEqual(RouteId.LoginRoute)
+            expect(router.currentRoute.routeDefinition.routeId).toEqual(RouteId.LoginRoute)
         })
 
         it('unauthenticated user accessing private route should be redirected to login route', () => {
@@ -179,10 +182,10 @@ describe('authentication', () => {
 
     describe('logout', () => {
         it('should logout', async () => {
-            const { router, loginRegisterPresenter, userModel, routingGateway } = app!
+            const { router, routeDefinitions, loginRegisterPresenter, userModel, routingGateway } = app!
             userModel.token = 'a@b1234.com'
             router.currentRoute = {
-                routeId: RouteId.HomeRoute
+                routeDefinition: routeDefinitions.forRouteId(RouteId.HomeRoute)
             }
 
             await loginRegisterPresenter.logOut()

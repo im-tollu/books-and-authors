@@ -27,7 +27,7 @@ export class NavigationRepository {
     get currentNode() {
         return this.getTree().first((node) => {
             const navigationNode: NavigationNode = node.model
-            return navigationNode.routeId === this._router.currentRoute.routeId
+            return navigationNode.routeId === this._router.currentRoute.routeDefinition.routeId
         })
     }
 

@@ -5,15 +5,15 @@ import { Config } from "../Core/Config";
 import type { IApiGateway } from "../Core/IApiGateway";
 import { TYPE } from "../Core/Types";
 
-export enum MessagePM {
-    UNSET,
-    LOADED,
-    RESET
+export enum BooksPM {
+    UNSET = 'UNSET',
+    LOADED = 'LOADED',
+    RESET = 'RESET'
 }
 
 @injectable()
 export class BooksRepository {
-    messagePM: MessagePM = MessagePM.UNSET
+    messagePM: BooksPM = BooksPM.UNSET
 
     constructor(
         @inject(Config) private _config: Config,
@@ -27,11 +27,11 @@ export class BooksRepository {
 
     load = () => {
         setTimeout(() => {
-            this.messagePM = MessagePM.LOADED
+            this.messagePM = BooksPM.LOADED
         }, 2000)
     }
 
     reset = () => {
-        this.messagePM = MessagePM.RESET
+        this.messagePM = BooksPM.RESET
     }
 }

@@ -8,7 +8,7 @@ export const BooksComponent: React.FC = observer(() => {
     return (
         <>
             <h1>BOOKS</h1>
-            {presenter.viewModel.books}
+            {presenter.viewModel}
         </>
     )
 })

@@ -10,9 +10,11 @@ export enum RouteId {
 }
 
 export interface RouteDefinition {
-    routeId: RouteId,
-    path: string[],
-    isSecure: boolean,
+    routeId: RouteId
+    path: string[]
+    isSecure: boolean
+    onEnter?: () => void
+    onLeave?: () => void
 }
 
 @injectable()
@@ -38,6 +40,14 @@ export class RouteDefinitions {
                 routeId: RouteId.BooksRoute,
                 path: ['books'],
                 isSecure: true,
+                onEnter: () => {
+                    console.log('Entering books')
+                    this._booksRepository.load()
+                },
+                onLeave: () => {
+                    console.log('Resetting books')
+                    this._booksRepository.reset()
+                }
             },
             {
                 routeId: RouteId.NotFoundRoute,

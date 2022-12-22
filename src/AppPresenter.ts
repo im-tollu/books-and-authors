@@ -14,6 +14,6 @@ export class AppPresenter {
     }
 
     get currentRouteId(): RouteId {
-        return this.router.currentRoute.routeId
+        return this.router.currentRoute.routeDefinition.routeId
     }
 }

@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { computed, makeObservable, observable } from "mobx";
-import { BooksRepository } from "./BooksRepository";
+import { BooksPM, BooksRepository } from "./BooksRepository";
 
 export interface BooksViewModel {
     books: string
@@ -11,7 +11,7 @@ export class BooksPresenter {
     newBookName: string | null
 
     constructor(
-        @inject(BooksRepository) _booksRepository: BooksRepository
+        @inject(BooksRepository) private _booksRepository: BooksRepository
     ) {
         this.newBookName = null
 
@@ -21,10 +21,8 @@ export class BooksPresenter {
         })
     }
 
-    get viewModel(): BooksViewModel {
-        return {
-            books: 'none'
-        }
+    get viewModel(): BooksPM {
+        return this._booksRepository.messagePM
     }
 
     reset = () => {

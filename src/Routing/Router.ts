@@ -7,7 +7,7 @@ import type { IRoutingGateway } from './IRoutingGateway'
 import { RouteDefinition, RouteDefinitions, RouteId } from './RouteDefinitions'
 
 export interface Route {
-    routeId: RouteId
+    routeDefinition: RouteDefinition
 }
 
 const ROUTING_PREFIX = '#!'
@@ -23,7 +23,7 @@ export class Router {
         @inject(RouteDefinitions) private _routeDefinitions: RouteDefinitions
     ) {
         this.currentRoute = {
-            routeId: RouteId.LoginRoute
+            routeDefinition: this._routeDefinitions.forRouteId(RouteId.LoginRoute)
         }
 
         makeObservable(this, {
@@ -34,12 +34,13 @@ export class Router {
     }
 
     navigate = (routeId: RouteId) => {
-        console.log('RouteId:', routeId)
+        const onLeave = this.currentRoute.routeDefinition.onLeave
+        if (!!onLeave) {
+            onLeave()
+        }
         const routeDefinition = this._routeDefinitions.forRouteId(routeId)
-        console.log('Route definition:', JSON.stringify(routeDefinition, null, 2))
         const pathString = routeDefinition.path.join('/')
         const routingString = `${ROUTING_PREFIX}${pathString}`
-        console.log(`navigating to ${routingString}`)
         this._messages.reset()
         this._gateway.navigate(routingString)
     }
@@ -57,8 +58,13 @@ export class Router {
             return
         }
 
+        const onEnter = routeDefinition.onEnter
+        if (!!onEnter) {
+            onEnter()
+        }
+
         this.currentRoute = {
-            routeId
+            routeDefinition
         }
     }
 
