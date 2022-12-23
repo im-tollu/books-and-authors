@@ -5,9 +5,14 @@ import { Router } from '../Routing/Router'
 import { makeObservable, computed, action } from 'mobx'
 import { RouteId } from '../Routing/RouteDefinitions'
 
+export enum NavigationNodeType {
+    Root = 'root',
+    Link = 'link'
+}
+
 export interface NavigationNode {
     routeId: RouteId;
-    type: string;
+    type: NavigationNodeType;
     text: string;
     children: NavigationNode[];
 }
@@ -37,14 +42,33 @@ export class NavigationRepository {
 
         let root = tree.parse<NavigationNode>({
             routeId: RouteId.HomeRoute,
-            type: 'root',
+            type: NavigationNodeType.Root,
             text: 'Home',
             children: [
                 {
                     routeId: RouteId.BooksRoute,
-                    type: 'menu',
+                    type: NavigationNodeType.Link,
                     text: 'Books',
                     children: []
+                },
+                {
+                    routeId: RouteId.AuthorsRoute,
+                    type: NavigationNodeType.Link,
+                    text: 'Authors',
+                    children: [
+                        {
+                            routeId: RouteId.AuthorsRoute_AuthorPolicyRoute,
+                            type: NavigationNodeType.Link,
+                            text: 'Author Policy',
+                            children: []
+                        },
+                        {
+                            routeId: RouteId.AuthorsRoute_MapRoute,
+                            type: NavigationNodeType.Link,
+                            text: 'View Map',
+                            children: []
+                        }
+                    ]
                 }
             ]
         })

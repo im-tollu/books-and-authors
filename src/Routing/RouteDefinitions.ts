@@ -6,6 +6,8 @@ export enum RouteId {
     HomeRoute = 'HomeRoute',
     BooksRoute = 'BooksRoute',
     AuthorsRoute = 'AuthorsRoute',
+    AuthorsRoute_AuthorPolicyRoute = 'AuthorsRoute_AuthorPolicyRoute',
+    AuthorsRoute_MapRoute = 'AuthorsRoute_MapRoute',
     NotFoundRoute = 'NotFoundRoute',
 }
 
@@ -48,6 +50,21 @@ export class RouteDefinitions {
                     console.log('Resetting books')
                     this._booksRepository.reset()
                 }
+            },
+            {
+                routeId: RouteId.AuthorsRoute,
+                path: ['authors'],
+                isSecure: true,
+            },
+            {
+                routeId: RouteId.AuthorsRoute_AuthorPolicyRoute,
+                path: ['authors', 'policy'],
+                isSecure: false,
+            },
+            {
+                routeId: RouteId.AuthorsRoute_MapRoute,
+                path: ['authors', 'map'],
+                isSecure: false,
             },
             {
                 routeId: RouteId.NotFoundRoute,

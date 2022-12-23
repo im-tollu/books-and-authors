@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite'
 import React, { useEffect } from 'react';
 import { AppPresenter } from './AppPresenter';
 import { LoginRegisterComponent } from './Authentication/LoginRegisterComponent';
+import { AuthorPolicyComponent } from './Authors/AuthorPolicyComponent';
 import { AuthorsComponent } from './Authors/AuthorsComponent';
 import { BooksComponent } from './Books/BooksComponent';
 import { useInjection } from './Core/Providers/Injection';
@@ -59,6 +60,10 @@ const currentComponent = (routeId: RouteId): JSX.Element => {
       return <BooksComponent key={RouteId.BooksRoute} />
     case RouteId.AuthorsRoute:
       return <AuthorsComponent key={RouteId.AuthorsRoute} />
+    case RouteId.AuthorsRoute_AuthorPolicyRoute:
+      return <AuthorPolicyComponent key={RouteId.AuthorsRoute_AuthorPolicyRoute} />
+    case RouteId.AuthorsRoute_MapRoute:
+      return <AuthorPolicyComponent key={RouteId.AuthorsRoute_AuthorPolicyRoute} />
     default:
       throw new Error(`Component not found for routeId [${routeId}]`)
   }
