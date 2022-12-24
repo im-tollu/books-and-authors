@@ -33,7 +33,7 @@ export class NavigationPresenter {
         })
     }
 
-    get viewModel() {
+    get viewModel(): Menu {
         const vm: Menu = {
             showBack: false,
             currentSelectedVisibleName: '',
