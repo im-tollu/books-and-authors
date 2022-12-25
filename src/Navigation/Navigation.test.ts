@@ -31,7 +31,8 @@ describe('navigation', () => {
         userModel.token = 'token'
 
         // start at Home
-        router.onRoute('#!')
+        navigationPresenter.goToId(RouteId.HomeRoute)
+
         expect(navigationPresenter.viewModel).toEqual({
             showBack: false,
             currentSelectedVisibleName: 'Home > HomeRoute',
@@ -52,7 +53,6 @@ describe('navigation', () => {
         navigationPresenter.goToId(RouteId.AuthorsRoute)
         expect(routingGateway.navigate).toBeCalledWith('#!authors')
 
-        router.onRoute('#!authors')
         expect(navigationPresenter.viewModel).toEqual({
             showBack: true,
             currentSelectedVisibleName: 'Authors > AuthorsRoute',
@@ -73,7 +73,6 @@ describe('navigation', () => {
         navigationPresenter.goToId(RouteId.AuthorsRoute_AuthorPolicyRoute)
         expect(routingGateway.navigate).toBeCalledWith('#!authors/policy')
 
-        router.onRoute('#!authors/policy')
         expect(navigationPresenter.viewModel).toEqual({
             showBack: true,
             currentSelectedVisibleName: 'Author Policy > AuthorsRoute_AuthorPolicyRoute',
@@ -87,16 +86,44 @@ describe('navigation', () => {
         const { navigationPresenter, userModel, router, routingGateway } = app!
         userModel.token = 'token'
 
-        // start at Authors Policy
-        router.onRoute('#!authors/policy')
+        router.navigate(RouteId.AuthorsRoute_AuthorPolicyRoute)
+
         navigationPresenter.back()
 
         expect(routingGateway.navigate).toBeCalledWith('#!authors')
+        expect(navigationPresenter.viewModel).toEqual({
+            showBack: true,
+            currentSelectedVisibleName: 'Authors > AuthorsRoute',
+            currentSelectedBackTarget: { visible: true, routeId: RouteId.HomeRoute },
+            menuItems: [
+                {
+                    'routeId': RouteId.AuthorsRoute_AuthorPolicyRoute,
+                    'visibleName': 'Author Policy',
+                },
+                {
+                    'routeId': RouteId.AuthorsRoute_MapRoute,
+                    'visibleName': 'View Map',
+                }
+            ]
+        })
 
-        // back to Authors
-        router.onRoute('#!authors')
         navigationPresenter.back()
 
         expect(routingGateway.navigate).toBeCalledWith('#!')
+        expect(navigationPresenter.viewModel).toEqual({
+            showBack: false,
+            currentSelectedVisibleName: 'Home > HomeRoute',
+            currentSelectedBackTarget: { visible: false, routeId: null },
+            menuItems: [
+                {
+                    'routeId': RouteId.BooksRoute,
+                    'visibleName': 'Books',
+                },
+                {
+                    'routeId': RouteId.AuthorsRoute,
+                    'visibleName': 'Authors',
+                }
+            ]
+        })
     })
 })

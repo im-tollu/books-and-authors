@@ -15,7 +15,6 @@ export class UserModel {
     }
 
     get isLoggedIn() {
-        console.log(`token: ${this.token}`)
         return this.token !== null
     }
 }

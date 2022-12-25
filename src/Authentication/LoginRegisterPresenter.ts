@@ -66,17 +66,14 @@ export class LoginRegisterPresenter {
     }
 
     login = async () => {
-        console.log('Logging in...')
         await this._authenticationRepository.login(this.email, this.password)
     }
 
     register = async () => {
-        console.log('Registering...')
         await this._authenticationRepository.register(this.email, this.password)
     }
 
     logOut = async () => {
-        console.log('Logging out...')
         await this._authenticationRepository.logOut()
     }
 }

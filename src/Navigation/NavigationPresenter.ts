@@ -66,7 +66,6 @@ export class NavigationPresenter {
 
     visibleName = (node: Node<NavigationNode>) => {
         const navigationNode: NavigationNode = node.model
-        console.log(`Visible name: ${navigationNode.text} ${navigationNode.routeId}`)
         return navigationNode.text + ' > ' + navigationNode.routeId
     }
 

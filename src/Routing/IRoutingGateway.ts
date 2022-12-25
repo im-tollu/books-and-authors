@@ -1,6 +1,6 @@
-import { RouteId } from "./RouteDefinitions";
+export type RoutingHandler = (routingString: string) => void
 
 export interface IRoutingGateway {
-    subscribe: (handler: (routingString: string) => void) => void
+    subscribe: (handler: RoutingHandler) => void
     navigate: (routingString: string) => void
 }

@@ -1,7 +1,8 @@
 import { Container } from "inversify"
 import { createContainer, Gateways } from "../AppIOC"
 import { IApiGateway } from "../Core/IApiGateway"
-import { IRoutingGateway } from "../Routing/IRoutingGateway"
+import { FakeRoutingGateway } from "../Routing/FakeRoutingGateway"
+import { IRoutingGateway, RoutingHandler } from "../Routing/IRoutingGateway"
 
 export const initTestApp = (): Container => {
     const apiGateway: IApiGateway = {
@@ -9,10 +10,9 @@ export const initTestApp = (): Container => {
         post: jest.fn(),
         delete: jest.fn(),
     }
-    const routingGateway: IRoutingGateway = {
-        subscribe: jest.fn(),
-        navigate: jest.fn(),
-    }
+
+    const routingGateway: IRoutingGateway = new FakeRoutingGateway()
+
     const gateways: Gateways = {
         apiGateway,
         routingGateway,
