@@ -12,6 +12,7 @@ export enum BooksLoadState {
 }
 
 export interface BookProgrammerModel {
+    bookId: number
     name: string
 }
 
@@ -46,6 +47,7 @@ export class BooksRepository {
             const booksDto = responseDto.result as GetBooksResult
             this.booksProgrammerModel = booksDto.map(book => {
                 return {
+                    bookId: book.bookId,
                     name: book.name
                 }
             })

@@ -32,15 +32,19 @@ describe('books', () => {
             await booksPresenter.load()
             expect(bookListPresenter.viewModel).toEqual([
                 {
+                    bookId: 881,
                     name: 'Wind in the willows',
                 },
                 {
+                    bookId: 891,
                     name: 'I, Robot',
                 },
                 {
+                    bookId: 901,
                     name: 'The Hobbit',
                 },
                 {
+                    bookId: 911,
                     name: 'Wind In The Willows 2',
                 },
             ])

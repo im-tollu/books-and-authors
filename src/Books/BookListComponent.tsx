@@ -5,7 +5,7 @@ import { BookListPresenter } from "./BookListPresenter";
 export const BookListComponent: React.FC = observer(() => {
     const presenter = useInjection(BookListPresenter)
     const books = presenter.viewModel.map(book => {
-        return <li>{book.name}</li>
+        return <li key={book.bookId}>{book.name}</li>
     })
 
     return (

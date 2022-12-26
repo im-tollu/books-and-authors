@@ -3,6 +3,7 @@ import { computed, makeObservable } from "mobx";
 import { BooksRepository } from "./BooksRepository";
 
 export interface BookViewModel {
+    bookId: number
     name: string
 }
 
@@ -23,6 +24,7 @@ export class BookListPresenter {
         return this._booksRepository.booksProgrammerModel
             .map(book => {
                 return {
+                    bookId: book.bookId,
                     name: book.name
                 }
             })
