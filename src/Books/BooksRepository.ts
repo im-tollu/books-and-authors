@@ -5,15 +5,29 @@ import { Config } from "../Core/Config";
 import type { IApiGateway } from "../Core/IApiGateway";
 import { TYPE } from "../Core/Types";
 
-export enum BooksPM {
+export enum BooksLoadState {
     UNSET = 'UNSET',
     LOADED = 'LOADED',
     RESET = 'RESET'
 }
 
+export interface BookProgrammerModel {
+    name: string
+}
+
+export interface GetBooksResult_Book {
+    bookId: number
+    name: string
+    emailOwnerId: string
+    devOwnerId: string
+}
+
+export type GetBooksResult = GetBooksResult_Book[]
+
 @injectable()
 export class BooksRepository {
-    messagePM: BooksPM = BooksPM.UNSET
+    messagePM: BooksLoadState = BooksLoadState.UNSET
+    booksProgrammerModel: BookProgrammerModel[] | null = null
 
     constructor(
         @inject(Config) private _config: Config,
@@ -21,17 +35,25 @@ export class BooksRepository {
         @inject(UserModel) private _userModel: UserModel,
     ) {
         makeObservable(this, {
-            messagePM: observable
+            messagePM: observable,
+            booksProgrammerModel: observable
         })
     }
 
-    load = () => {
-        setTimeout(() => {
-            this.messagePM = BooksPM.LOADED
-        }, 2000)
+    load = async () => {
+        const responseDto = await this._apiGateway.getPublic('/books')
+        if (responseDto.success) {
+            const booksDto = responseDto.result as GetBooksResult
+            this.booksProgrammerModel = booksDto.map(book => {
+                return {
+                    name: book.name
+                }
+            })
+            this.messagePM = BooksLoadState.LOADED
+        }
     }
 
     reset = () => {
-        this.messagePM = BooksPM.RESET
+        this.messagePM = BooksLoadState.RESET
     }
 }

@@ -13,8 +13,17 @@ export class HttpGateway implements IApiGateway {
         this.authenticationToken = token
     }
 
+    getPublic = async (path: string) => {
+        const response = await fetch(this.resolvePath(path, true), {
+            method: 'GET',
+            headers: this.buildHeaders()
+        })
+        const dto = await response.json()
+        return dto
+    }
+
     get = async (path: string) => {
-        const response = await fetch(this.resolvePath(path), {
+        const response = await fetch(this.resolvePath(path, false), {
             method: 'GET',
             headers: this.buildHeaders()
         })
@@ -23,7 +32,7 @@ export class HttpGateway implements IApiGateway {
     }
 
     post = async (path: string, requestDto: Object) => {
-        const response = await fetch(this.resolvePath(path), {
+        const response = await fetch(this.resolvePath(path, false), {
             method: 'POST',
             body: JSON.stringify(requestDto),
             headers: this.buildHeaders()
@@ -34,7 +43,7 @@ export class HttpGateway implements IApiGateway {
     }
 
     delete = async (path: string) => {
-        const response = await fetch(this.resolvePath(path), {
+        const response = await fetch(this.resolvePath(path, false), {
             method: 'DELETE',
             headers: this.buildHeaders()
         })
@@ -42,7 +51,10 @@ export class HttpGateway implements IApiGateway {
         return dto
     }
 
-    resolvePath = (path: string) => {
+    resolvePath = (path: string, isPublic: boolean) => {
+        if (isPublic) {
+            return this._config.publicApiUrl + path
+        }
         return this._config.secureApiUrl + path
     }
 

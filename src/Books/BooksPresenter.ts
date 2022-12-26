@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { computed, makeObservable, observable } from "mobx";
-import { BooksPM, BooksRepository } from "./BooksRepository";
+import { BooksLoadState, BooksRepository } from "./BooksRepository";
 
 export interface BooksViewModel {
     books: string
@@ -21,8 +21,12 @@ export class BooksPresenter {
         })
     }
 
-    get viewModel(): BooksPM {
+    get viewModel(): BooksLoadState {
         return this._booksRepository.messagePM
+    }
+
+    load = async () => {
+        await this._booksRepository.load()
     }
 
     reset = () => {

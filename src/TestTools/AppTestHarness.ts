@@ -6,6 +6,7 @@ import { IRoutingGateway, RoutingHandler } from "../Routing/IRoutingGateway"
 
 export const initTestApp = (): Container => {
     const apiGateway: IApiGateway = {
+        getPublic: jest.fn(),
         get: jest.fn(),
         post: jest.fn(),
         delete: jest.fn(),
