@@ -16,7 +16,6 @@ interface BooksApp {
     messagesPresenter: MessagesPresenter
     userModel: UserModel
     apiGateway: IApiGateway
-    config: Config
 }
 
 describe('books', () => {
@@ -30,7 +29,6 @@ describe('books', () => {
             messagesPresenter: container.get(MessagesPresenter),
             userModel: container.get(UserModel),
             apiGateway: container.get(TYPE.IApiGateway),
-            config: container.get(Config)
         }
         const mockGetBooks = app.apiGateway.get as unknown as jest.Mock
         mockGetBooks.mockResolvedValue(GetBooksStub())
@@ -54,14 +52,6 @@ describe('books', () => {
                     bookId: 891,
                     name: 'I, Robot',
                 },
-                // {
-                //     bookId: 901,
-                //     name: 'The Hobbit',
-                // },
-                // {
-                //     bookId: 911,
-                //     name: 'Wind In The Willows 2',
-                // },
             ])
         })
     })
