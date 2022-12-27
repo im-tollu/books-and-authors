@@ -9,8 +9,8 @@ export class HttpGateway implements IApiGateway {
     }
 
 
-    set authenticationToken(token: string | null) {
-        this.authenticationToken = token
+    setAuthenticationToken(token: string | null) {
+        this._authenticationToken = token
     }
 
     getPublic = async (path: string) => {

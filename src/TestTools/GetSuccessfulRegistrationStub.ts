@@ -2,7 +2,8 @@ export function GetSuccessfulRegistrationStub() {
     return {
         success: true,
         result: {
-            token: 'a@b1234.com',
+            email: 'a@b.com',
+            token: '1234a@b.com',
             message: 'Success: Limited to one test account per trainee!'
         }
     }

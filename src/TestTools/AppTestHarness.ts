@@ -10,6 +10,7 @@ export const initTestApp = (): Container => {
         get: jest.fn(),
         post: jest.fn(),
         delete: jest.fn(),
+        setAuthenticationToken: jest.fn()
     }
 
     const routingGateway: IRoutingGateway = new FakeRoutingGateway()

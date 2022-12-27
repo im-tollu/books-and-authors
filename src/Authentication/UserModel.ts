@@ -3,18 +3,17 @@ import { computed, makeObservable, observable } from 'mobx'
 
 @injectable()
 export class UserModel {
-    token: string | null
+    email: string | null = null
+    token: string | null = null
 
     constructor() {
         makeObservable(this, {
             token: observable,
             isLoggedIn: computed,
         })
-
-        this.token = null
     }
 
     get isLoggedIn() {
-        return this.token !== null
+        return this.token !== null && this.email !== null
     }
 }

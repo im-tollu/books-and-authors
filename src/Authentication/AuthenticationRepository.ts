@@ -13,6 +13,7 @@ interface LoginDto {
 }
 
 interface RegisterDto {
+    email: string
     token: string
     message: string
 }
@@ -42,7 +43,9 @@ export class AuthenticationRepository {
 
         if (responseDto.success) {
             const loginDto = responseDto.result as LoginDto
+            this._userModel.email = loginDto.email
             this._userModel.token = loginDto.token
+            this._apiGateway.setAuthenticationToken(loginDto.token)
             this._router.navigate(RouteId.HomeRoute)
         } else {
             const messageDto = responseDto.result as ApiMessage
@@ -58,7 +61,9 @@ export class AuthenticationRepository {
 
         if (responseDto.success) {
             const registerDto = responseDto.result as RegisterDto
+            this._userModel.email = registerDto.email
             this._userModel.token = registerDto.token
+            this._apiGateway.setAuthenticationToken(registerDto.token)
             this._messagesRepository.addSuccess(registerDto.message)
         } else {
             const messageDto = responseDto.result as ApiMessage
@@ -67,7 +72,9 @@ export class AuthenticationRepository {
     }
 
     logOut = async () => {
+        this._userModel.email = null
         this._userModel.token = null
+        this._apiGateway.setAuthenticationToken(null)
         this._router.navigate(RouteId.LoginRoute)
     }
 }

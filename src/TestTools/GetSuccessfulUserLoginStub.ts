@@ -2,7 +2,8 @@ export function GetSuccessfulUserLoginStub() {
     return {
         success: true,
         result: {
-            token: 'a@b1234.com',
+            email: 'a@b.com',
+            token: '1234a@b.com',
             message: 'Success: found user.'
         }
     }

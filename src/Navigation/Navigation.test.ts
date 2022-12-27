@@ -28,6 +28,7 @@ describe('navigation', () => {
 
     it('should navigate down the navigation tree', () => {
         const { navigationPresenter, userModel, router, routingGateway } = app!
+        userModel.email = 'a@b@com'
         userModel.token = 'token'
 
         // start at Home
@@ -84,6 +85,7 @@ describe('navigation', () => {
 
     it('should move back twice', () => {
         const { navigationPresenter, userModel, router, routingGateway } = app!
+        userModel.email = 'a@b@com'
         userModel.token = 'token'
 
         router.navigate(RouteId.AuthorsRoute_AuthorPolicyRoute)

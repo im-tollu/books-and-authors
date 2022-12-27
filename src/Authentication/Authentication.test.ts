@@ -79,7 +79,7 @@ describe('authentication', () => {
             mockResolve(apiGateway.post, GetSuccessfulRegistrationStub())
 
             loginRegisterPresenter.option = LoginRegisterOption.Register
-            loginRegisterPresenter.email = 'joe@example.org'
+            loginRegisterPresenter.email = 'a@b.com'
             loginRegisterPresenter.password = 'p@ssw0rd'
 
             await loginRegisterPresenter.submitForm()
@@ -88,12 +88,13 @@ describe('authentication', () => {
                 .toBeCalledWith(
                     '/register',
                     {
-                        email: 'joe@example.org',
+                        email: 'a@b.com',
                         password: 'p@ssw0rd'
                     }
                 )
-            expect(userModel.token).toEqual('a@b1234.com')
+            expect(userModel.token).toEqual('1234a@b.com')
             expect(userModel.isLoggedIn).toEqual(true)
+            expect(apiGateway.setAuthenticationToken).toBeCalledWith('1234a@b.com')
             expect(messagesPresenter.successes).toContain('Success: Limited to one test account per trainee!')
         })
 
@@ -115,7 +116,7 @@ describe('authentication', () => {
             const { loginRegisterPresenter, messagesPresenter, userModel, apiGateway } = app!
 
             loginRegisterPresenter.option = LoginRegisterOption.Register
-            loginRegisterPresenter.email = 'joe@example.org'
+            loginRegisterPresenter.email = 'a@b.com'
             loginRegisterPresenter.password = ''
 
             await loginRegisterPresenter.submitForm()
@@ -130,7 +131,7 @@ describe('authentication', () => {
             mockResolve(apiGateway.post, GetFailedRegistrationStub())
 
             loginRegisterPresenter.option = LoginRegisterOption.Register
-            loginRegisterPresenter.email = 'joe@example.org'
+            loginRegisterPresenter.email = 'a@b.com'
             loginRegisterPresenter.password = 'p@ssw0rd'
 
             await loginRegisterPresenter.submitForm()
@@ -146,7 +147,7 @@ describe('authentication', () => {
             mockResolve(apiGateway.post, GetSuccessfulUserLoginStub())
 
             loginRegisterPresenter.option = LoginRegisterOption.Login
-            loginRegisterPresenter.email = 'joe@example.org'
+            loginRegisterPresenter.email = 'a@b.com'
             loginRegisterPresenter.password = 'p@ssw0rd'
 
             await loginRegisterPresenter.submitForm()
@@ -155,13 +156,14 @@ describe('authentication', () => {
                 .toBeCalledWith(
                     '/login',
                     {
-                        email: 'joe@example.org',
+                        email: 'a@b.com',
                         password: 'p@ssw0rd'
                     }
                 )
-            expect(userModel.token).toEqual('a@b1234.com')
+            expect(userModel.token).toEqual('1234a@b.com')
             expect(userModel.isLoggedIn).toEqual(true)
             expect(routingGateway.navigate).toBeCalledWith('#!')
+            expect(apiGateway.setAuthenticationToken).toBeCalledWith('1234a@b.com')
         })
 
         it('should not leave login route on failed login', async () => {
@@ -169,7 +171,7 @@ describe('authentication', () => {
             mockResolve(apiGateway.post, GetFailedUserLoginStub())
 
             loginRegisterPresenter.option = LoginRegisterOption.Login
-            loginRegisterPresenter.email = 'joe@example.org'
+            loginRegisterPresenter.email = 'a@b.com'
             loginRegisterPresenter.password = 'p@ssw0rd'
 
             await loginRegisterPresenter.submitForm()
@@ -182,8 +184,8 @@ describe('authentication', () => {
 
     describe('logout', () => {
         it('should logout', async () => {
-            const { router, routeDefinitions, loginRegisterPresenter, userModel, routingGateway } = app!
-            userModel.token = 'a@b1234.com'
+            const { router, routeDefinitions, loginRegisterPresenter, userModel, apiGateway, routingGateway } = app!
+            userModel.token = '1234a@b.com'
             router.currentRoute = {
                 routeDefinition: routeDefinitions.forRouteId(RouteId.HomeRoute)
             }
@@ -192,6 +194,7 @@ describe('authentication', () => {
 
             expect(userModel.token).toBeNull()
             expect(userModel.isLoggedIn).toEqual(false)
+            expect(apiGateway.setAuthenticationToken).toBeCalledWith(null)
             expect(routingGateway.navigate).toBeCalledWith('#!login')
         })
     })

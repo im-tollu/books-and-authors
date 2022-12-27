@@ -36,6 +36,7 @@ describe('Router', () => {
     it('authenticated user can navigate to target route', () => {
         const { router, userModel } = app!
 
+        userModel.email = 'a@b@com'
         userModel.token = 'authToken'
         router.onRoute('#!')
 
