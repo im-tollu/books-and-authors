@@ -1,4 +1,5 @@
 import { observer } from "mobx-react-lite";
+import { MessagesComponent } from "../Core/Messages/MessagesComponent";
 import { useInjection } from "../Core/Providers/Injection";
 import { AddBookComponent } from "./AddBookComponent";
 import { BookListComponent } from "./BookListComponent";
@@ -9,10 +10,12 @@ export const BooksComponent: React.FC = observer(() => {
 
     return (
         <>
-            <h1>BOOKS</h1>
-            {presenter.viewModel}
+            <h1>Books</h1>
             <AddBookComponent />
+            <br />
             <BookListComponent />
+            <br />
+            <MessagesComponent />
         </>
     )
 })
