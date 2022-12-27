@@ -18,7 +18,7 @@ export const BooksComponent: React.FC = observer(() => {
                     <br />
                 </>
             )}
-            <AddBookComponent />
+            <AddBookComponent presenter={presenter} />
             <br />
             <BookListComponent />
             <br />

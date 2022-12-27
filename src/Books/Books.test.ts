@@ -1,5 +1,4 @@
-import exp from "constants"
-import { autorun, reaction } from "mobx"
+import { reaction } from "mobx"
 import { UserModel } from "../Authentication/UserModel"
 import { Config } from "../Core/Config"
 import { IApiGateway } from "../Core/IApiGateway"
@@ -81,8 +80,8 @@ describe('books', () => {
                 }
             )
 
-            bookListPresenter.newBookName = 'A New Book'
-            await bookListPresenter.addBook()
+            booksPresenter.newBookName = 'A New Book'
+            await booksPresenter.addBook()
         })
 
         it('should reload book list', async () => {

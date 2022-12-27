@@ -1,10 +1,11 @@
 import { observer } from "mobx-react-lite";
-import { useInjection } from "../Core/Providers/Injection";
-import { BookListPresenter } from "./BookListPresenter";
+import { IAddBookPresenter } from "./IAddBookPresenter";
 
-export const AddBookComponent: React.FC = observer(() => {
-    const presenter = useInjection(BookListPresenter)
+interface Props {
+    presenter: IAddBookPresenter
+}
 
+export const AddBookComponent: React.FC<Props> = observer(({ presenter }) => {
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = submitEvent => {
         submitEvent.preventDefault()
         presenter.addBook()
