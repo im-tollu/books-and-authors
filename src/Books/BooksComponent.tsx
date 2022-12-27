@@ -4,6 +4,7 @@ import { useInjection } from "../Core/Providers/Injection";
 import { AddBookComponent } from "./AddBookComponent";
 import { BookListComponent } from "./BookListComponent";
 import { BooksPresenter } from "./BooksPresenter";
+import { LastAddedBookComponent } from "./LastAddedBookComponent";
 
 export const BooksComponent: React.FC = observer(() => {
     const presenter = useInjection(BooksPresenter)
@@ -11,6 +12,12 @@ export const BooksComponent: React.FC = observer(() => {
     return (
         <>
             <h1>Books</h1>
+            {presenter.lastAddedBook && (
+                <>
+                    <LastAddedBookComponent lastAddedBook={presenter.lastAddedBook} />
+                    <br />
+                </>
+            )}
             <AddBookComponent />
             <br />
             <BookListComponent />

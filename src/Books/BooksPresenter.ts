@@ -8,17 +8,20 @@ export interface BooksViewModel {
 
 @injectable()
 export class BooksPresenter {
-    newBookName: string | null
+    newBookName: string = ''
 
     constructor(
         @inject(BooksRepository) private _booksRepository: BooksRepository
     ) {
-        this.newBookName = null
-
         makeObservable(this, {
             newBookName: observable,
+            lastAddedBook: computed,
             viewModel: computed
         })
+    }
+
+    get lastAddedBook(): string | null {
+        return this._booksRepository.lastAddedBook
     }
 
     get viewModel(): BooksLoadState {

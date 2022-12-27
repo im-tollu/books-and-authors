@@ -91,5 +91,11 @@ describe('books', () => {
 
             expect(messagesPresenter.successes).toContain('Book Added')
         })
+
+        it('should update last added book', async () => {
+            const { booksPresenter } = app!
+
+            expect(booksPresenter.lastAddedBook).toEqual('A New Book')
+        })
     })
 })

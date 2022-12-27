@@ -34,6 +34,7 @@ export type GetBooksResult = GetBooksResult_Book[]
 @injectable()
 export class BooksRepository {
     messagePM: BooksLoadState = BooksLoadState.UNSET
+    lastAddedBook: string | null = null
     booksProgrammerModel: BookProgrammerModel[] | null = null
 
     constructor(
@@ -44,6 +45,7 @@ export class BooksRepository {
     ) {
         makeObservable(this, {
             messagePM: observable,
+            lastAddedBook: observable,
             booksProgrammerModel: observable
         })
     }
@@ -76,6 +78,7 @@ export class BooksRepository {
         }
 
         const addedBookResult = responseDto.result as AddedBookResult
+        this.lastAddedBook = name
         this._messagesPresenter.addSuccess(addedBookResult.message)
         await this.load()
     }

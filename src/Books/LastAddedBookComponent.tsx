@@ -1,11 +1,11 @@
 interface Props {
-
+    lastAddedBook: string
 }
 
-export const LastAddedBookComponent: React.FC<Props> = ({ }) => {
+export const LastAddedBookComponent: React.FC<Props> = ({ lastAddedBook }) => {
     return (
         <div>
-            <span>Last Added Book:</span> <span></span>
+            <span>Last Added Book:</span> <span>{lastAddedBook}</span>
         </div>
     )
 }
