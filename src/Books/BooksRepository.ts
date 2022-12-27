@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { makeObservable, observable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 import { UserModel } from "../Authentication/UserModel";
 import { Config } from "../Core/Config";
 import type { ErrorResult, IApiGateway } from "../Core/IApiGateway";
@@ -46,6 +46,7 @@ export class BooksRepository {
         makeObservable(this, {
             messagePM: observable,
             lastAddedBook: observable,
+            setLastAddedBook: action,
             booksProgrammerModel: observable
         })
     }
@@ -78,9 +79,13 @@ export class BooksRepository {
         }
 
         const addedBookResult = responseDto.result as AddedBookResult
-        this.lastAddedBook = name
+        this.setLastAddedBook(name)
         this._messagesPresenter.addSuccess(addedBookResult.message)
         await this.load()
+    }
+
+    setLastAddedBook(name: string | null) {
+        this.lastAddedBook = name
     }
 
     reset = () => {

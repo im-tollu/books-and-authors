@@ -1,4 +1,5 @@
 import exp from "constants"
+import { autorun, reaction } from "mobx"
 import { UserModel } from "../Authentication/UserModel"
 import { Config } from "../Core/Config"
 import { IApiGateway } from "../Core/IApiGateway"
@@ -67,10 +68,18 @@ describe('books', () => {
     })
 
     describe('saving', () => {
+        let lastAddedBook: string | null = null
+
         beforeEach(async () => {
-            const { bookListPresenter, apiGateway } = app!
+            const { bookListPresenter, booksPresenter, apiGateway } = app!
             const mockPostBooks = apiGateway.post as unknown as jest.Mock
             mockPostBooks.mockResolvedValue(PostBookSuccessStub(1234))
+            reaction(
+                () => booksPresenter.lastAddedBook,
+                updatedLastAddedBook => {
+                    lastAddedBook = updatedLastAddedBook
+                }
+            )
 
             bookListPresenter.newBookName = 'A New Book'
             await bookListPresenter.addBook()
@@ -93,9 +102,7 @@ describe('books', () => {
         })
 
         it('should update last added book', async () => {
-            const { booksPresenter } = app!
-
-            expect(booksPresenter.lastAddedBook).toEqual('A New Book')
+            expect(lastAddedBook).toEqual('A New Book')
         })
     })
 })
