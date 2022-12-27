@@ -49,17 +49,21 @@ export class BooksRepository {
     }
 
     load = async () => {
-        const responseDto = await this._apiGateway.getPublic('/books')
-        if (responseDto.success) {
-            const booksDto = responseDto.result as GetBooksResult
-            this.booksProgrammerModel = booksDto.map(book => {
-                return {
-                    bookId: book.bookId,
-                    name: book.name
-                }
-            })
-            this.messagePM = BooksLoadState.LOADED
+        const responseDto = await this._apiGateway.get(`/books?emailOwnerId=${this._userModel.email}`)
+        if (!responseDto.success) {
+            const errorResult = responseDto.result as ErrorResult
+            this._messagesPresenter.addError(errorResult.message)
+            return
         }
+
+        const booksDto = responseDto.result as GetBooksResult
+        this.booksProgrammerModel = booksDto.map(book => {
+            return {
+                bookId: book.bookId,
+                name: book.name
+            }
+        })
+        this.messagePM = BooksLoadState.LOADED
     }
 
     add = async (name: string) => {
@@ -73,7 +77,7 @@ export class BooksRepository {
 
         const addedBookResult = responseDto.result as AddedBookResult
         this._messagesPresenter.addSuccess(addedBookResult.message)
-        return await this.load()
+        await this.load()
     }
 
     reset = () => {

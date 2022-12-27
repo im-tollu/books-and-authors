@@ -1,5 +1,6 @@
 import exp from "constants"
 import { UserModel } from "../Authentication/UserModel"
+import { Config } from "../Core/Config"
 import { IApiGateway } from "../Core/IApiGateway"
 import { MessagesPresenter } from "../Core/Messages/MessagesPresenter"
 import { TYPE } from "../Core/Types"
@@ -15,6 +16,7 @@ interface BooksApp {
     messagesPresenter: MessagesPresenter
     userModel: UserModel
     apiGateway: IApiGateway
+    config: Config
 }
 
 describe('books', () => {
@@ -27,9 +29,10 @@ describe('books', () => {
             bookListPresenter: container.get(BookListPresenter),
             messagesPresenter: container.get(MessagesPresenter),
             userModel: container.get(UserModel),
-            apiGateway: container.get(TYPE.IApiGateway)
+            apiGateway: container.get(TYPE.IApiGateway),
+            config: container.get(Config)
         }
-        const mockGetBooks = app.apiGateway.getPublic as unknown as jest.Mock
+        const mockGetBooks = app.apiGateway.get as unknown as jest.Mock
         mockGetBooks.mockResolvedValue(GetBooksStub())
         app.userModel.email = 'a@b.com'
         app.userModel.token = 'a@b1234.com'
@@ -41,7 +44,7 @@ describe('books', () => {
 
             await booksPresenter.load()
 
-            expect(apiGateway.getPublic).toBeCalledWith('/books')
+            expect(apiGateway.get).toBeCalledWith('/books?emailOwnerId=a@b.com')
             expect(bookListPresenter.viewModel).toEqual([
                 {
                     bookId: 881,
@@ -77,10 +80,10 @@ describe('books', () => {
             const { apiGateway } = app!
 
             expect(apiGateway.post).toBeCalledWith('/books', {
-                emailOwnerId: "a@b.com",
+                emailOwnerId: 'a@b.com',
                 name: 'A New Book',
             })
-            expect(apiGateway.getPublic).toBeCalledWith('/books')
+            expect(apiGateway.get).toBeCalledWith('/books?emailOwnerId=a@b.com')
         })
 
         it('should update books message', async () => {

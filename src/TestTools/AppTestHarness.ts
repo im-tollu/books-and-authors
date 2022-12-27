@@ -1,8 +1,9 @@
 import { Container } from "inversify"
 import { createContainer, Gateways } from "../AppIOC"
+import { Config } from "../Core/Config"
 import { IApiGateway } from "../Core/IApiGateway"
 import { FakeRoutingGateway } from "../Routing/FakeRoutingGateway"
-import { IRoutingGateway, RoutingHandler } from "../Routing/IRoutingGateway"
+import { IRoutingGateway } from "../Routing/IRoutingGateway"
 
 export const initTestApp = (): Container => {
     const apiGateway: IApiGateway = {
