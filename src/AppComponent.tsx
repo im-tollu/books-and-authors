@@ -53,17 +53,18 @@ export const AppComponent: React.FC = observer(() => {
 })
 
 const currentComponent = (routeId: RouteId): JSX.Element => {
+  console.log('currentComponent#routeId:', routeId)
   switch (routeId) {
     case RouteId.HomeRoute:
-      return <HomeComponent key={RouteId.HomeRoute} />
+      return <HomeComponent />
     case RouteId.BooksRoute:
-      return <BooksComponent key={RouteId.BooksRoute} />
+      return <BooksComponent />
     case RouteId.AuthorsRoute:
-      return <AuthorsComponent key={RouteId.AuthorsRoute} />
+      return <AuthorsComponent />
     case RouteId.AuthorsRoute_AuthorPolicyRoute:
-      return <AuthorPolicyComponent key={RouteId.AuthorsRoute_AuthorPolicyRoute} />
+      return <AuthorPolicyComponent />
     case RouteId.AuthorsRoute_MapRoute:
-      return <AuthorPolicyComponent key={RouteId.AuthorsRoute_AuthorPolicyRoute} />
+      return <AuthorPolicyComponent />
     default:
       throw new Error(`Component not found for routeId [${routeId}]`)
   }

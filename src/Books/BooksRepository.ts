@@ -1,7 +1,6 @@
 import { inject, injectable } from "inversify";
 import { action, computed, makeObservable, observable } from "mobx";
 import { UserModel } from "../Authentication/UserModel";
-import { Config } from "../Core/Config";
 import type { ErrorResult, IApiGateway } from "../Core/IApiGateway";
 import { MessagesPresenter } from "../Core/Messages/MessagesPresenter";
 import { TYPE } from "../Core/Types";
@@ -29,16 +28,15 @@ export interface AddedBookResult {
     bookId: number
 }
 
-export type GetBooksResult = GetBooksResult_Book[]
+type GetBooksResult = GetBooksResult_Book[]
 
 @injectable()
 export class BooksRepository {
     messagePM: BooksLoadState = BooksLoadState.UNSET
-    lastAddedBook: string | null = null
-    booksProgrammerModel: BookProgrammerModel[] | null = null
+    lastAddedBook: BookProgrammerModel | null = null
+    booksProgrammerModel: BookProgrammerModel[] = []
 
     constructor(
-        @inject(Config) private _config: Config,
         @inject(TYPE.IApiGateway) private _apiGateway: IApiGateway,
         @inject(UserModel) private _userModel: UserModel,
         @inject(MessagesPresenter) private _messagesPresenter: MessagesPresenter,
@@ -47,6 +45,7 @@ export class BooksRepository {
             messagePM: observable,
             lastAddedBook: observable,
             setLastAddedBook: action,
+            add: action,
             booksProgrammerModel: observable
         })
     }
@@ -69,26 +68,49 @@ export class BooksRepository {
         this.messagePM = BooksLoadState.LOADED
     }
 
+    getBook = async (bookId: number): Promise<BookProgrammerModel> => {
+        const responseDto = await this._apiGateway.get(`/book?emailOwnerId=${this._userModel.email}&bookId=${bookId}`)
+        if (!responseDto.success) {
+            const errorResult = responseDto.result as ErrorResult
+            throw new Error(errorResult.message)
+        }
+
+        const bookDto = (responseDto.result as GetBooksResult)[0]
+        return {
+            bookId: bookDto.bookId,
+            name: bookDto.name
+        }
+    }
+
     add = async (name: string) => {
         const emailOwnerId = this._userModel.email
         const responseDto = await this._apiGateway.post('/books', { name, emailOwnerId })
         if (!responseDto.success) {
             const errorResult = responseDto.result as ErrorResult
             this._messagesPresenter.addError(errorResult.message)
+            this.setLastAddedBook(null)
             return
         }
 
         const addedBookResult = responseDto.result as AddedBookResult
-        this.setLastAddedBook(name)
+        this.setLastAddedBook({
+            name,
+            bookId: addedBookResult.bookId
+        })
         this._messagesPresenter.addSuccess(addedBookResult.message)
-        await this.load()
     }
 
-    setLastAddedBook(name: string | null) {
-        this.lastAddedBook = name
+    setLastAddedBook(book: BookProgrammerModel | null) {
+        this.lastAddedBook = book
     }
 
     reset = () => {
         this.messagePM = BooksLoadState.RESET
+    }
+
+    stage = (name: string) => {
+        this.booksProgrammerModel.push({
+            name, bookId: Math.random()
+        })
     }
 }

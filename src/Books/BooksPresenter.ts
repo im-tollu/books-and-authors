@@ -24,7 +24,10 @@ export class BooksPresenter implements IAddBookPresenter {
     }
 
     get lastAddedBook(): string | null {
-        return this._booksRepository.lastAddedBook
+        if (this._booksRepository.lastAddedBook === null) {
+            return null
+        }
+        return this._booksRepository.lastAddedBook.name
     }
 
     get viewModel(): BooksLoadState {
@@ -48,5 +51,6 @@ export class BooksPresenter implements IAddBookPresenter {
 
         await this._booksRepository.add(this.newBookName)
         this.newBookName = ''
+        await this.load()
     }
 }

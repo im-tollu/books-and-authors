@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { observer } from 'mobx-react-lite'
 import { MessagesPresenter } from './MessagesPresenter'
 import { useInjection } from '../Providers/Injection'
+import { namedObserver } from '../Observer'
 
-export const MessagesComponent: React.FC = observer(() => {
+export const MessagesComponent: React.FC = namedObserver('MessagesComponent', () => {
     const presenter = useInjection(MessagesPresenter)
 
     return (

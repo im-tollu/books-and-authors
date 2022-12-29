@@ -2,11 +2,9 @@ import { Config } from './Config'
 import { IApiGateway } from './IApiGateway'
 
 export class HttpGateway implements IApiGateway {
-    _authenticationToken: string | null
+    _authenticationToken: string | null = '1234a@b.com'
 
-    constructor(private _config: Config) {
-        this._authenticationToken = null
-    }
+    constructor(private _config: Config) { }
 
 
     setAuthenticationToken(token: string | null) {

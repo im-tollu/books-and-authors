@@ -1,11 +1,11 @@
-import { observer } from "mobx-react-lite";
+import { namedObserver } from "../Core/Observer";
 import { IAddBookPresenter } from "./IAddBookPresenter";
 
 interface Props {
     presenter: IAddBookPresenter
 }
 
-export const AddBookComponent: React.FC<Props> = observer(({ presenter }) => {
+export const AddBookComponent: React.FC<Props> = namedObserver('AddBookComponent', ({ presenter }) => {
     const handleSubmit: React.FormEventHandler<HTMLFormElement> = submitEvent => {
         submitEvent.preventDefault()
         presenter.addBook()
@@ -17,7 +17,7 @@ export const AddBookComponent: React.FC<Props> = observer(({ presenter }) => {
 
     return (
         <div>
-            <form className="login" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <label>
                     <input
                         type="text"

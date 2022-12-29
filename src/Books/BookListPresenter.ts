@@ -19,9 +19,6 @@ export class BookListPresenter {
     }
 
     get viewModel(): BookViewModel[] {
-        if (!this._booksRepository.booksProgrammerModel) {
-            return []
-        }
         return this._booksRepository.booksProgrammerModel
             .map(book => {
                 return {
