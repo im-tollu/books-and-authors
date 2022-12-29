@@ -1,6 +1,5 @@
 import { injectable, inject } from "inversify";
-import { computed, makeObservable, observable } from "mobx";
-import { MessagesPresenter } from "../Core/Messages/MessagesPresenter";
+import { computed, makeObservable } from "mobx";
 import { BooksRepository } from "./BooksRepository";
 
 export interface BookViewModel {

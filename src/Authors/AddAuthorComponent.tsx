@@ -1,4 +1,3 @@
-import { observer } from "mobx-react-lite"
 import { namedObserver } from "../Core/Observer"
 import { useInjection } from "../Core/Providers/Injection"
 import { AuthorsPresenter } from "./AuthorsPresenter"

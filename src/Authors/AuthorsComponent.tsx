@@ -12,7 +12,6 @@ export const AuthorsComponent: FC = namedObserver('AuthorsComponent', () => {
     const presenter = useInjection(AuthorsPresenter)
 
     useEffect(() => {
-        console.log('AuthorsComponent#useEffect')
         presenter.load()
     }, [])
 
