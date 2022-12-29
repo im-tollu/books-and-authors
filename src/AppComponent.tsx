@@ -9,12 +9,6 @@ import { useInjection } from './Core/Providers/Injection';
 import { HomeComponent } from './Home/HomeComponent';
 import { NavigationComponent } from './Navigation/NavigationComponent';
 import { RouteId } from './Routing/RouteDefinitions';
-import { Router } from './Routing/Router';
-
-interface RenderedComponent {
-  routeId: RouteId,
-  component: JSX.Element
-}
 
 export const AppComponent: React.FC = observer(() => {
   const presenter = useInjection<AppPresenter>(AppPresenter)
@@ -30,13 +24,6 @@ export const AppComponent: React.FC = observer(() => {
       </div>
     )
   }
-
-  const renderedComponents: RenderedComponent[] = [
-    {
-      routeId: RouteId.HomeRoute,
-      component: <HomeComponent key={RouteId.HomeRoute} />
-    }
-  ]
 
   return (
     <div className="container">

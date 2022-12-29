@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { action, computed, makeObservable, observable } from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import { UserModel } from "../Authentication/UserModel";
 import type { ErrorResult, IApiGateway } from "../Core/IApiGateway";
 import { MessagesPresenter } from "../Core/Messages/MessagesPresenter";

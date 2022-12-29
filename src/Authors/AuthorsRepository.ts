@@ -1,6 +1,5 @@
 import { inject, injectable } from "inversify";
 import { action, makeObservable, observable } from "mobx";
-import { observer } from "mobx-react-lite";
 import { UserModel } from "../Authentication/UserModel";
 import { BookProgrammerModel, BooksRepository } from "../Books/BooksRepository";
 import type { ErrorResult, IApiGateway } from "../Core/IApiGateway";
