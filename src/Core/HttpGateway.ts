@@ -2,7 +2,7 @@ import { Config } from './Config'
 import { IApiGateway } from './IApiGateway'
 
 export class HttpGateway implements IApiGateway {
-    _authenticationToken: string | null = '1234a@b.com'
+    _authenticationToken: string | null = null
 
     constructor(private _config: Config) { }
 
