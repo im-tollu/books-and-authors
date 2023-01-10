@@ -44,6 +44,7 @@ export class BooksRepository {
       messagePM: observable,
       add: action,
       booksProgrammerModel: observable,
+      reset: action,
     });
   }
 
@@ -104,6 +105,7 @@ export class BooksRepository {
   };
 
   reset = () => {
+    this.booksProgrammerModel.splice(0, this.booksProgrammerModel.length);
     this.messagePM = BooksLoadState.RESET;
   };
 

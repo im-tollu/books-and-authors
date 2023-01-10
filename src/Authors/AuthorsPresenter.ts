@@ -44,11 +44,8 @@ export class AuthorsPresenter implements IAddBookPresenter {
 
   load = async () => {
     await this._authorsRepository.load();
-    if (this._authorsRepository.authorsProgrammerModel.length > 4) {
-      this.showAuthorsList = false;
-    } else {
-      this.showAuthorsList = true;
-    }
+    this.showAuthorsList =
+      this._authorsRepository.authorsProgrammerModel.length <= 4;
   };
 
   addBook = async () => {
