@@ -78,7 +78,7 @@ export class AuthorsRepository {
 
   resetProgrammerModel = () => {
     this.authorsProgrammerModel.splice(0, this.authorsProgrammerModel.length);
-    this._booksRepository.reset()
+    this._booksRepository.reset();
   };
 
   pushToProgrammerModel(author: AuthorProgrammerModel) {
